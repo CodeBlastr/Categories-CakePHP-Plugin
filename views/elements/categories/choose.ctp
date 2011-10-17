@@ -1,6 +1,6 @@
 <?php 
 # setup element defaults
-$parent = !empty($parent) ? $parent : Inflector::classify($this->params['controller']);
+$parent = !empty($parent) ? $parent : Inflector::classify($this->request->params['controller']);
 $index = isset($this->data['Category']) ? count($this->data['Category']) : 0;
 ?>
 

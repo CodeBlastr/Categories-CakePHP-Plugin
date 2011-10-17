@@ -67,7 +67,7 @@ class CategoriesController extends CategoriesAppController {
 		#$this->Category->recursive = 0;
 		$this->helpers[] = 'Utils.Tree';
 		$params['order'] = array('Category.name', 'Category.lft');
-		$params['conditions'] = !empty($this->params['named']['model']) ? array('Category.model' => $this->params['named']['model']) : null;
+		$params['conditions'] = !empty($this->request->params['named']['model']) ? array('Category.model' => $this->request->params['named']['model']) : null;
 		$categories = $this->Category->find('threaded', $params);
 		#$categoryOptions = $this->Category->CategoryOption->find('threaded', array('order' => 'CategoryOption.lft'));
 		$this->set(compact('categories'));
@@ -99,8 +99,8 @@ class CategoriesController extends CategoriesAppController {
 	 * 
 	 */
 	function add($categoryId = null) {
-		if (!empty($this->params['named']['parent']) && empty($this->params['named']['model'])) : 
-			$parent = $this->Category->findbyId($this->params['named']['parent']); 
+		if (!empty($this->request->params['named']['parent']) && empty($this->request->params['named']['model'])) : 
+			$parent = $this->Category->findbyId($this->request->params['named']['parent']); 
 			if (!empty($parent['Category']['model'])) : 
 				$this->redirect(array('action' => 'add', 'model' => $parent['Category']['model'], 'parent' => $parent['Category']['id']));
 			endif;
@@ -132,10 +132,10 @@ class CategoriesController extends CategoriesAppController {
 			$this->data['Category']['category_id'] = $categoryId;
 		}
 		
-		$this->data['Category']['model'] = !empty($this->params['named']['model']) ? $this->params['named']['model'] : null;
+		$this->data['Category']['model'] = !empty($this->request->params['named']['model']) ? $this->request->params['named']['model'] : null;
 		$models = $this->Category->listModels();
 		$parents = $this->Category->generatetreelist();
-		$this->data['Category']['parent_id'] = !empty($this->params['named']['parent']) ? $this->params['named']['parent'] : null;
+		$this->data['Category']['parent_id'] = !empty($this->request->params['named']['parent']) ? $this->request->params['named']['parent'] : null;
 		#$users = $this->Category->User->find('list');
 		$types = $this->Category->get_types();
 		$this->set(compact('models', 'parents', 'types'));
@@ -185,8 +185,8 @@ class CategoriesController extends CategoriesAppController {
 	function choose_category($categoryId = null) {
 		App::Import('Model', 'Catalogs.Catalog');
 		$catalog = new Catalog();
-		if (!empty($this->params['named']['catalog'])) {
-			$this->set('catalogIdUrl', $this->params['named']['catalog']);
+		if (!empty($this->request->params['named']['catalog'])) {
+			$this->set('catalogIdUrl', $this->request->params['named']['catalog']);
 		}
 		else if (!empty($this->data)) {
 			$catalog_id = $this->data['CatalogItem']['catalog_id'];
@@ -204,8 +204,8 @@ class CategoriesController extends CategoriesAppController {
 	 * @todo 		Make it so that we could also use the $categoryId to set where the choosing starts.
 	 */
 	function admin_choose_category($categoryId = null) {
-		if (!empty($this->params['named']['catalog'])) {
-			$this->set('catalogIdUrl', $this->params['named']['catalog']);
+		if (!empty($this->request->params['named']['catalog'])) {
+			$this->set('catalogIdUrl', $this->request->params['named']['catalog']);
 		}
 		else if (!empty($this->data)) {
 			$catalog_id = $this->data['CatalogItem']['catalog_id'];
@@ -224,10 +224,10 @@ class CategoriesController extends CategoriesAppController {
 	function get_children() {
 		$parent = null;
 		$parentId = null;
-		if (isset($this->params['named']['parentId']))
-			$parentId = ($this->params['named']['parentId']);
-		if (isset($this->params['named']['parent']))
-			$parent = ($this->params['named']['parent']);
+		if (isset($this->request->params['named']['parentId']))
+			$parentId = ($this->request->params['named']['parentId']);
+		if (isset($this->request->params['named']['parent']))
+			$parent = ($this->request->params['named']['parent']);
 
 		$directChildren = array();
 		if ($parent && $parentId) {
@@ -292,8 +292,8 @@ class CategoriesController extends CategoriesAppController {
 				$this->redirect(array('action' => 'index'));
 			}
 		} else {
-			if (!empty($this->params['named']['type'])) {
-				$model = $this->params['named']['type'];
+			if (!empty($this->request->params['named']['type'])) {
+				$model = $this->request->params['named']['type'];
 				$this->set('referer', $this->referer());
 				$this->set('models', ClassRegistry::init($model)->find('list', array()));
 				$this->set('categories', $this->Category->find('list', array(

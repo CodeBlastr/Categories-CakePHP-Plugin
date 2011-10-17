@@ -11,12 +11,12 @@
 ?>
 <?php echo $this->Form->create('Category', array('url'=>array('controller'=>'categories',
 	'action'=>'categorized')));?>
-	<?php echo $this->Form->hidden('Model.type', array('value' => $this->params['named']['type']));
+	<?php echo $this->Form->hidden('Model.type', array('value' => $this->request->params['named']['type']));
 			echo $this->Form->hidden('Model.Referer',array('value' => $referer));?>
 <div style ="float:left; width: 520px;">
 	<div style ="float:left; width: 230px;position:absolute">
-	<?php 			echo $this->params['named']['type'];?>
-		<?php echo $this->Form->select($this->params['named']['type'].'.id', $models, null, array('multiple' => true, 'div' => false, 'style' => 'height:235px' ));?>
+	<?php 			echo $this->request->params['named']['type'];?>
+		<?php echo $this->Form->select($this->request->params['named']['type'].'.id', $models, null, array('multiple' => true, 'div' => false, 'style' => 'height:235px' ));?>
 	</div>
 	
 	<div style ="float:right; width: 230px;">
