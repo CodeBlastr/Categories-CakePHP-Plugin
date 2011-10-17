@@ -57,7 +57,7 @@ foreach ($categories as $category):
 
 <?php 
 // set the contextual menu items
-$menu->setValue(array(
+$this->Menu->setValue(array(
 	array(
 		'heading' => 'Categories',
 		'items' => array(

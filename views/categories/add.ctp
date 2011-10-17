@@ -13,10 +13,10 @@
 <fieldset>
    <?php 
 	echo $this->Form->input('name', array('label' => 'Display Name'));
-	echo $form->input('GalleryImage.filename', array('type' => 'file', 'label' => 'Category thumbnail'));
-	echo $form->input('GalleryImage.dir', array('type' => 'hidden'));
-	echo $form->input('GalleryImage.mimetype', array('type' => 'hidden'));
-	echo $form->input('GalleryImage.filesize', array('type' => 'hidden'));
+	echo $this->Form->input('GalleryImage.filename', array('type' => 'file', 'label' => 'Category thumbnail'));
+	echo $this->Form->input('GalleryImage.dir', array('type' => 'hidden'));
+	echo $this->Form->input('GalleryImage.mimetype', array('type' => 'hidden'));
+	echo $this->Form->input('GalleryImage.filesize', array('type' => 'hidden'));
 	echo $this->Form->input('description', array('type' => 'richtext'));
    ?>
 <?php echo $this->Form->submit(__d('categories', 'Submit', true));?>

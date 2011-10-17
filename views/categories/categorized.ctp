@@ -11,8 +11,8 @@
 ?>
 <?php echo $this->Form->create('Category', array('url'=>array('controller'=>'categories',
 	'action'=>'categorized')));?>
-	<?php echo $form->hidden('Model.type', array('value' => $this->params['named']['type']));
-			echo $form->hidden('Model.Referer',array('value' => $referer));?>
+	<?php echo $this->Form->hidden('Model.type', array('value' => $this->params['named']['type']));
+			echo $this->Form->hidden('Model.Referer',array('value' => $referer));?>
 <div style ="float:left; width: 520px;">
 	<div style ="float:left; width: 230px;position:absolute">
 	<?php 			echo $this->params['named']['type'];?>
@@ -24,14 +24,14 @@
 			echo $this->Form->select('id', $categories, null, array('multiple'=>true, 'div'=>false, 'style'=>'height:235px' ));	?>
 	</div>
 </div>
-<?php echo $form->end('Assign Categories');?>
+<?php echo $this->Form->end('Assign Categories');?>
 
 
 
 
 <?php 
 // set the contextual menu items
-$menu->setValue(array(
+$this->Menu->setValue(array(
 	array(
 		'heading' => 'Categories',
 		'items' => array(
