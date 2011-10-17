@@ -42,7 +42,7 @@ $indexData = $this->requestAction('/categories/categories/requestForItems/'.$id.
 
 <div class="<?php echo $indexVar;?> index">
   <h2><?php echo(!empty($settings['pageHeading']) ? $settings['pageHeading'] : $humanCtrl); ?></h2>
-  <!--p><?php #echo $paginator->counter(array('format' => 'Page %page% of %pages%, showing %current% records out of %count% total, starting on record %start%, ending on %end%')); ?></p-->
+  <!--p><?php #echo $this->Paginator->counter(array('format' => 'Page %page% of %pages%, showing %current% records out of %count% total, starting on record %start%, ending on %end%')); ?></p-->
   <div class="indexContainer">
     <?php if (!empty($indexData)) : ?>
     <div class="indexRow" id="headingRow">
@@ -50,7 +50,7 @@ $indexData = $this->requestAction('/categories/categories/requestForItems/'.$id.
       <div class="indexCell columnHeading">Image</div>
       <?php endif; ?>
       <?php $i = 0; foreach ($settings['fields'] as $_alias): ?>
-      <div class="indexCell columnHeading" id="<?php #echo $_modelClass; ?>"><?php #echo $paginator->sort($_alias); ?></div>
+      <div class="indexCell columnHeading" id="<?php #echo $_modelClass; ?>"><?php #echo $this->Paginator->sort($_alias); ?></div>
       <?php $i++; endforeach;?>
       <?php if(!empty($settings['action'])) { ?>
       <div class="indexCell columnHeading" id="columnActions">
