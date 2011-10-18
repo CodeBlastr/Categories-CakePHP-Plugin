@@ -1,7 +1,7 @@
 <?php 
 # setup element defaults
 $parent = !empty($parent) ? $parent : Inflector::classify($this->request->params['controller']);
-$index = isset($this->data['Category']) ? count($this->data['Category']) : 0;
+$index = isset($this->request->data['Category']) ? count($this->request->data['Category']) : 0;
 ?>
 
 <div id ="wrap-content">

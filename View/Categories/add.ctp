@@ -25,7 +25,7 @@
 </div>
 
 <script type="text/javascript">
-<?php if (empty($this->data['Category']['parent_id'])) : ?>
+<?php if (empty($this->request->data['Category']['parent_id'])) : ?>
 call_select();
 <?php endif; ?>
 

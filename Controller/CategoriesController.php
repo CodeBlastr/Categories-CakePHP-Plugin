@@ -106,21 +106,21 @@ class CategoriesController extends CategoriesAppController {
 			endif;
 		endif;
 		
-		if(!empty($this->data)) :
+		if(!empty($this->request->data)) :
 			try {
-				$result = $this->Category->add($this->Auth->user('id'), $this->data);
+				$result = $this->Category->add($this->Auth->user('id'), $this->request->data);
 				if ($result === true) {
-					if (!empty($this->data['Category']['parent_id']) && empty($this->data['Category']['type'])) : 
+					if (!empty($this->request->data['Category']['parent_id']) && empty($this->request->data['Category']['type'])) : 
 						# if there was a parent_id then we can assign categories to items
 						$this->Session->setFlash(__d('categories', 'Category Saved.  You can assign categories here.', true));
-						$this->redirect(array('action' => 'categorized', 'type' => $this->data['Category']['model']));
+						$this->redirect(array('action' => 'categorized', 'type' => $this->request->data['Category']['model']));
 					else :
 						$this->Session->setFlash(__d('categories', 'Category Saved', true));
-						$this->redirect(array('action' => 'tree', 'model' => $this->data['Category']['model']));
+						$this->redirect(array('action' => 'tree', 'model' => $this->request->data['Category']['model']));
 					endif;
 				}
 			} catch (Exception $e) {
-				$this->data['Category']['model'] = !empty($this->data['Category']['model']) ? $this->data['Category']['model'] : null;
+				$this->request->data['Category']['model'] = !empty($this->request->data['Category']['model']) ? $this->request->data['Category']['model'] : null;
 				$this->Session->setFlash($e->getMessage());
 			} catch (Exception $e) {
 				$this->Session->setFlash($e->getMessage());
@@ -128,14 +128,14 @@ class CategoriesController extends CategoriesAppController {
 			}
 		endif;
 		
-		if (!empty($this->data) && !empty($categoryId)) {
-			$this->data['Category']['category_id'] = $categoryId;
+		if (!empty($this->request->data) && !empty($categoryId)) {
+			$this->request->data['Category']['category_id'] = $categoryId;
 		}
 		
-		$this->data['Category']['model'] = !empty($this->request->params['named']['model']) ? $this->request->params['named']['model'] : null;
+		$this->request->data['Category']['model'] = !empty($this->request->params['named']['model']) ? $this->request->params['named']['model'] : null;
 		$models = $this->Category->listModels();
 		$parents = $this->Category->generatetreelist();
-		$this->data['Category']['parent_id'] = !empty($this->request->params['named']['parent']) ? $this->request->params['named']['parent'] : null;
+		$this->request->data['Category']['parent_id'] = !empty($this->request->params['named']['parent']) ? $this->request->params['named']['parent'] : null;
 		#$users = $this->Category->User->find('list');
 		$types = $this->Category->get_types();
 		$this->set(compact('models', 'parents', 'types'));
@@ -148,13 +148,13 @@ class CategoriesController extends CategoriesAppController {
 	 */
 	function edit($id = null) {
 		try {
-			$result = $this->Category->edit($id, null, $this->data);
+			$result = $this->Category->edit($id, null, $this->request->data);
 			if ($result === true) {
 				$this->Session->setFlash(__d('categories', 'Category saved', true));
 				$this->redirect(array('action' => 'tree'));
 				
 			} else {
-				$this->data = $result;
+				$this->request->data = $result;
 			}
 		} catch (Exception $e) {
 			$this->Session->setFlash($e->getMessage());
@@ -188,8 +188,8 @@ class CategoriesController extends CategoriesAppController {
 		if (!empty($this->request->params['named']['catalog'])) {
 			$this->set('catalogIdUrl', $this->request->params['named']['catalog']);
 		}
-		else if (!empty($this->data)) {
-			$catalog_id = $this->data['CatalogItem']['catalog_id'];
+		else if (!empty($this->request->data)) {
+			$catalog_id = $this->request->data['CatalogItem']['catalog_id'];
 			$this->set('catalogs', $catalog->find('list', array('conditions'=>array('Catalog.id'=>$catalog_id))));
 		} else {
 			$this->set('catalogs', $catalog->Catalog->find('list'));
@@ -207,8 +207,8 @@ class CategoriesController extends CategoriesAppController {
 		if (!empty($this->request->params['named']['catalog'])) {
 			$this->set('catalogIdUrl', $this->request->params['named']['catalog']);
 		}
-		else if (!empty($this->data)) {
-			$catalog_id = $this->data['CatalogItem']['catalog_id'];
+		else if (!empty($this->request->data)) {
+			$catalog_id = $this->request->data['CatalogItem']['catalog_id'];
 			$this->set('catalogs', $this->Category->Catalog->find('list', array('conditions'=>array('Catalog.id'=>$catalog_id))));
 		} else {
 			$this->set('catalogs', $this->Category->Catalog->find('list'));
@@ -279,13 +279,13 @@ class CategoriesController extends CategoriesAppController {
 	 *
 	 */
 	function categorized() {
-		if (!empty($this->data)) {
+		if (!empty($this->request->data)) {
 			try {
 				$result = $this->Category->categorized($this->Auth->user('id'),
-					$this->data, $this->data['Model']['type']);
+					$this->request->data, $this->request->data['Model']['type']);
 				if ($result) {
 					$this->Session->setFlash(__d('categories', 'Category assigned', true));
-					$this->redirect( $this->data['Model']['Referer']);
+					$this->redirect( $this->request->data['Model']['Referer']);
 				}
 			} catch (Exception $e) {
 				$this->Session->setFlash($e->getMessage());

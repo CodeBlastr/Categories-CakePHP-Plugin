@@ -188,7 +188,7 @@ class Category extends CategoriesAppModel {
 				$result = $this->CategoryOption->save($data['Category']);
 			}
 			if ($result !== false) {
-				$this->data = array_merge($data, $result);
+				$this->request->data = array_merge($data, $result);
 				return true;
 			} else {
 				# roll back if a category was created, and there was an error
@@ -206,7 +206,7 @@ class Category extends CategoriesAppModel {
  *
  * @param string $id, category id 
  * @param string $userId, user id
- * @param array $data, controller post data usually $this->data
+ * @param array $data, controller post data usually $this->request->data
  * @return mixed True on successfully save else post data as array
  * @throws Exception If the element does not exists
  */
@@ -228,7 +228,7 @@ class Category extends CategoriesAppModel {
 			$this->set($data);
 			$result = $this->save(null, true);
 			if ($result) {
-				$this->data = $result;
+				$this->request->data = $result;
 				return true;
 			} else {
 				return $data;
@@ -284,7 +284,7 @@ class Category extends CategoriesAppModel {
  *
  * @param string $id, category id 
  * @param string $userId, user id
- * @param array $data, controller post data usually $this->data
+ * @param array $data, controller post data usually $this->request->data
  * @return boolean True on success
  * @throws Exception If the element does not exists
  */
@@ -298,7 +298,7 @@ class Category extends CategoriesAppModel {
 			throw new Exception(__d('categories', 'Invalid Category', true));
 		}
 
-		$this->data['category'] = $category;
+		$this->request->data['category'] = $category;
 		if (!empty($data)) {
 			$data['Category']['id'] = $id;
 			$tmp = $this->validate;

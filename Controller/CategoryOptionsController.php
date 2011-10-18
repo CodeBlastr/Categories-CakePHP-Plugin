@@ -15,7 +15,7 @@ class CategoryOptionsController extends CategoriesAppController {
 	 */
 	public function edit($id = null) {
 		$categories = $this->CategoryOption->Category->generatetreelist(); 
-		$this->data = $this->CategoryOption->find('first', array('conditions' => array('CategoryOption.id' => $id)));
+		$this->request->data = $this->CategoryOption->find('first', array('conditions' => array('CategoryOption.id' => $id)));
 		$this->set(compact('categories'));
 	}
 }

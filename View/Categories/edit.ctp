@@ -15,7 +15,7 @@
 	<?php
 		echo $this->Form->input('id');
 		echo $this->Form->input('parent_id', array('empty' => true));
-		echo $this->Form->input('name', array('after' => $this->Html->link(' Edit Category Images', array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'edit', 'Category', $this->data['Category']['id'], 'admin' => false))));
+		echo $this->Form->input('name', array('after' => $this->Html->link(' Edit Category Images', array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'edit', 'Category', $this->request->data['Category']['id'], 'admin' => false))));
 		echo $this->Form->input('model');
 		echo $this->Form->input('description', array('type' => 'richtext'));
 	?>
