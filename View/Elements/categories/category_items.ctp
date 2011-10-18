@@ -127,7 +127,7 @@ foreach ($categoryItems as $categoryItem):
     <div class="indexRow">
       <div class="indexCell galleryThumb" id="galleryThumb<?php echo $categoryItem[$modelName]['id']; ?>"> <?php echo $this->element('thumb', array('plugin' => 'galleries', 'model' => $modelName, 'foreignKey' => $categoryItem[$modelName]['id'], 'thumbSize' => 'medium', 'thumbLink' => "/{$plugin}/{$controller}/view/".$categoryItem[$modelName]['id']));  ?> </div>
       <div class="indexCell categoryItemName" id="categoryItemName<?php echo $categoryItem[$modelName]["id"]; ?>"> <?php echo $this->Html->link($categoryItem[$modelName]['name'] , array('plugin' => $plugin, 'controller' => $controller , 'action'=>'view' , $categoryItem[$modelName]["id"])); ?> </div>
-      <div class="indexCell categoryItemDescription" id="categoryItemDescription<?php echo $categoryItem[$modelName]['id']; ?>"> <?php echo $text->truncate(strip_tags($description), 50, array('ending' => '...', 'html' => true)); ?> </div>
+      <div class="indexCell categoryItemDescription" id="categoryItemDescription<?php echo $categoryItem[$modelName]['id']; ?>"> <?php echo $this->Text->truncate(strip_tags($description), 50, array('ending' => '...', 'html' => true)); ?> </div>
       
       <?php
 	  # this is the only non-abstract item here, we leave it because we haven't thought of a better way to do it yet.
