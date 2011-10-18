@@ -1,5 +1,5 @@
 <div class="categories form">
-<h2><?php __('Add a New Category'); ?></h2>
+<h2><?php echo __('Add a New Category'); ?></h2>
 <?php echo $this->Form->create('Category', array('type' => 'file'));?>
 
 	<div id ="ajax"></div>
