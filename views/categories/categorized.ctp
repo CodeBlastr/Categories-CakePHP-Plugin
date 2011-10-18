@@ -31,13 +31,13 @@
 
 <?php 
 // set the contextual menu items
-$this->Menu->setValue(array(
+echo $this->Element('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Categories',
 		'items' => array(
 			$this->Html->link(__d('categories', 'New Category', true), array('action' => 'add')),
 			$this->Html->link(__d('categories', 'Category Tree', true), array('action' => 'tree')),
-		)
-	),
-));
+			)
+		),
+	)));
 ?>
