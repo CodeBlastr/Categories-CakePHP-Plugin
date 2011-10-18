@@ -52,7 +52,7 @@ foreach ($categories as $category):
 </table>
 
 
-<?php echo $this->element('paging');?>
+<?php echo $this->Element('paging');?>
 
 
 <?php 

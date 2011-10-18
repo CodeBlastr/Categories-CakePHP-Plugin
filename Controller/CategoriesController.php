@@ -134,7 +134,7 @@ class CategoriesController extends CategoriesAppController {
 		
 		$this->request->data['Category']['model'] = !empty($this->request->params['named']['model']) ? $this->request->params['named']['model'] : null;
 		$models = $this->Category->listModels();
-		$parents = $this->Category->generatetreelist();
+		$parents = $this->Category->generateTreeList();
 		$this->request->data['Category']['parent_id'] = !empty($this->request->params['named']['parent']) ? $this->request->params['named']['parent'] : null;
 		#$users = $this->Category->User->find('list');
 		$types = $this->Category->get_types();
@@ -160,7 +160,7 @@ class CategoriesController extends CategoriesAppController {
 			$this->Session->setFlash($e->getMessage());
 			$this->redirect('/');
 		}
-		$parents = $this->Category->generatetreelist();
+		$parents = $this->Category->generateTreeList();
 		$options = $this->Category->CategoryOption->find('all', array('conditions' => array('CategoryOption.category_id' => $id, 'CategoryOption.type' => 'Attribute Group')));
 		#$users = $this->Category->User->find('list');
 		$this->set(compact('parents', 'options'));
@@ -262,10 +262,10 @@ class CategoriesController extends CategoriesAppController {
 		$this->layout = false;
 		$conditions = !empty($model) ? array('Category.model' => $model) : array('Category.model' => null);
 		if ($type == 'Category' || $type == 'Attribute Group' || $type == 'Option Group') {
-			$data = $this->Category->generatetreelist($conditions);
+			$data = $this->Category->generateTreeList($conditions);
 		} else if ($model = 'Catalog') {
 			$parent_type = explode(' ', $type);
-			$data = $this->Category->CategoryOption->generatetreelist(array(
+			$data = $this->Category->CategoryOption->generateTreeList(array(
 					'CategoryOption.type' => $parent_type[0]. ' Group',
 				)) ;
 						
