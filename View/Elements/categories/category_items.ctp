@@ -12,7 +12,7 @@ This is here temporarily, because I'm not sure why it was here in the first plac
 	}
 
 # these come from the plugin call
-$id = !empty($id) ? $id : $this->params['pass'][0]; 
+$id = !empty($id) ? $id : $this->request->params['pass'][0]; 
 $limit = !empty($limit) ? $limit : 10;
 $modelName = !empty($model) ? $model : null;
 #$modelSettings[$modelName] = $$modelName;

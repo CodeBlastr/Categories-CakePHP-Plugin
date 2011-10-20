@@ -361,7 +361,7 @@ class CategoriesController extends CategoriesAppController {
 	
 	
 	function _isRequestedAction() {
-		return array_key_exists('requested', $this->params);
+		return array_key_exists('requested', $this->request->params);
 	}
 }
 ?>
