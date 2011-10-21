@@ -11,7 +11,7 @@
 ?>
 <?php echo $this->Form->create('Category');?>
 	<fieldset>
- 		<legend><?php __d('categories', 'Edit Category');?></legend>
+ 		<legend><?php echo __d('categories', 'Edit Category');?></legend>
 	<?php
 		echo $this->Form->input('id');
 		echo $this->Form->input('parent_id', array('empty' => true));

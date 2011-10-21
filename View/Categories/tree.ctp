@@ -1,5 +1,5 @@
 <div class="categories tree">
-  <h2><?php __d('categories', 'Categories');?></h2>
+  <h2><?php echo __d('categories', 'Categories');?></h2>
   <?php 
 	$this->Html->script(
 		array(
