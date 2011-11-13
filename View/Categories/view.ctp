@@ -30,7 +30,7 @@ endif;
 
 <div class="categoriesItems">
 <?php 
-if (!empty($category['Associated'])) : 
+if (!empty($category['Associated'][key($category['Associated'])])) : 
 	foreach ($category['Associated'] as $model) : 
 		#echo $this->Element('categories/category_items', array('id' => $this->request->params['pass'][0], 'limit' => 9, 'model' => $model)); 
 		echo '<h4 class="categoryItemsLables">' . $category['Category']['name'] . ' Items ' . '</h4>';
