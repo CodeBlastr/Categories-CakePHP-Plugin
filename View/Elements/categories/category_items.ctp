@@ -116,7 +116,7 @@ echo "\n";
 $i = 0;
 foreach ($categoryItems as $categoryItem):
 	$modelName = key($categoryItem);
-	$plugin = pluginize($modelName);
+	$plugin = strtolower(pluginize($modelName));
 	$controller = Inflector::tableize($modelName);
 	$description = !empty($categoryItem[$modelName]['summary']) ? $categoryItem[$modelName]['summary'] : $categoryItem[$modelName]['summary']; // temporary until a better way to handle description field naming is devised
 	$class = null;
