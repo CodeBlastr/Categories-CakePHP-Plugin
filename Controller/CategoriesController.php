@@ -22,21 +22,22 @@ App::import('Model', 'Categories.Category');
  * @subpackage categories.controllers
  */
 class CategoriesController extends CategoriesAppController {
-	var $allowedActions = array('requestForItems');
+	public $allowedActions = array('requestForItems');
+	public $uses = 'Categories.Category';
 
 /**
  * Name
  *
  * @var string
  */
-	var $name = 'Categories';
+	public $name = 'Categories';
 
 /**
  * Helpers
  *
  * @var array
  */
-	var $helpers = array('Html', 'Form');
+	public $helpers = array('Html', 'Form');
 
 /**
  * beforeFilter callback
