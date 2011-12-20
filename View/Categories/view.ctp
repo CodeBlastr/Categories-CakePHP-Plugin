@@ -15,7 +15,9 @@
 </div>
 
 <?php 
-if (!empty($childCategories)) :  
+if (!empty($childCategories)) :  ?>
+<div class="subCategories">
+<h4><?php echo __('Sub Categories'); ?></h4> <?php
 	echo $this->Element('scaffolds/index', array(
 		'data' => $childCategories,
 		'modelName' => 'ChildCategory',
@@ -24,7 +26,8 @@ if (!empty($childCategories)) :
 		'displayName' => 'name',
 		'displayDescription' => '',
 		'actions' => array(),
-		));
+		));?>
+</div><?php
 endif;
 ?>
 

@@ -126,21 +126,21 @@ foreach ($categoryItems as $categoryItem):
 ?>
     <div class="indexRow">
       <div class="indexCell galleryThumb" id="galleryThumb<?php echo $categoryItem[$modelName]['id']; ?>"> <?php echo $this->Element('thumb', array('model' => $modelName, 'foreignKey' => $categoryItem[$modelName]['id'], 'thumbSize' => 'medium', 'thumbLink' => "/{$plugin}/{$controller}/view/".$categoryItem[$modelName]['id']), array('plugin' => 'galleries'));  ?> </div>
-      <div class="indexCell categoryItemName" id="categoryItemName<?php echo $categoryItem[$modelName]["id"]; ?>"> <?php echo $this->Html->link($categoryItem[$modelName]['name'] , array('plugin' => $plugin, 'controller' => $controller , 'action'=>'view' , $categoryItem[$modelName]["id"])); ?> </div>
-      <div class="indexCell categoryItemDescription" id="categoryItemDescription<?php echo $categoryItem[$modelName]['id']; ?>"> <?php echo $this->Text->truncate(strip_tags($description), 50, array('ending' => '...', 'html' => true)); ?> </div>
+      <div class="indexCell itemName categoryItemName" id="categoryItemName<?php echo $categoryItem[$modelName]["id"]; ?>"> <?php echo $this->Html->link($categoryItem[$modelName]['name'] , array('plugin' => $plugin, 'controller' => $controller , 'action'=>'view' , $categoryItem[$modelName]["id"])); ?> </div>
+      <div class="indexCell itemDescription categoryItemDescription" id="categoryItemDescription<?php echo $categoryItem[$modelName]['id']; ?>"> <?php echo $this->Text->truncate(strip_tags($description), 50, array('ending' => '...', 'html' => true)); ?> </div>
       
       <?php
 	  # this is the only non-abstract item here, we leave it because we haven't thought of a better way to do it yet.
 	  # @todo This may mess up the price by user role functionality, so it may need to be fixed.
 	  if(!empty($categoryItem[$modelName]['price'])) : ?>  
-      <div class="indexCell categoryItemPrice" id="categoryItemPrice<?php echo $categoryItem[$modelName]["id"]; ?>">
+      <div class="indexCell itemPrice categoryItemPrice" id="categoryItemPrice<?php echo $categoryItem[$modelName]["id"]; ?>">
         <?php echo '$'.$categoryItem[$modelName]['price']; ?> 
       </div>
       <?php
 	  endif;
 	  ?>
       
-      <div class="indexCell categoryItemAction" id="categoryItemAction<?php echo $categoryItem[$modelName]["id"]; ?>"> <?php echo $this->Html->link(__($this->Html->tag('span', 'view'), true), array('plugin' => $plugin, 'controller' => $controller, 'action' => 'view', $categoryItem[$modelName]['id']), array('escape' => false, 'class' => 'button')); ?> </div>
+      <div class="indexCell itemAction categoryItemAction" id="categoryItemAction<?php echo $categoryItem[$modelName]["id"]; ?>"> <?php echo $this->Html->link(__($this->Html->tag('span', 'view'), true), array('plugin' => $plugin, 'controller' => $controller, 'action' => 'view', $categoryItem[$modelName]['id']), array('escape' => false, 'class' => 'button')); ?> </div>
     </div>
     <?php endforeach; ?>
   </div>
