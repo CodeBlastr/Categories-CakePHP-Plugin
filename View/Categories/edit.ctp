@@ -21,5 +21,3 @@
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__d('categories', 'Submit', true));?>
-
-<?php debug($options); ?>

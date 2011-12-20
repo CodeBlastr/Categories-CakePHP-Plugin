@@ -188,7 +188,7 @@ class Category extends CategoriesAppModel {
 				$result = $this->CategoryOption->save($data['Category']);
 			}
 			if ($result !== false) {
-				$this->request->data = array_merge($data, $result);
+				$this->data = array_merge($data, $result);
 				return true;
 			} else {
 				# roll back if a category was created, and there was an error

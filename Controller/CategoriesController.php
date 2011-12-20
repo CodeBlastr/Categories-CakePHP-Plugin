@@ -95,13 +95,14 @@ class CategoriesController extends CategoriesAppController {
 	}
 	
 
-	/**
-	 * Admin add for category.
-	 * 
-	 */
+/**
+ * Admin add for category.
+ * 
+ * @todo 		Make two named parameters work.  categorize:{model to categorize}, parent:{parent category}.  These will prefill the the drop downs.  If only parent then we'll have to look up the model of that parent to set it.
+ */
 	function add($categoryId = null) {
-		if (!empty($this->request->params['named']['parent']) && empty($this->request->params['named']['model'])) : 
-			$parent = $this->Category->findbyId($this->request->params['named']['parent']); 
+		if (!empty($this->request->params['named']['parent']) && empty($this->request->params['named']['model'])) :
+			$parent = $this->Category->find('first', array('conditions' => array('Category.id' => $this->request->params['named']['parent']))); 
 			if (!empty($parent['Category']['model'])) : 
 				$this->redirect(array('action' => 'add', 'model' => $parent['Category']['model'], 'parent' => $parent['Category']['id']));
 			endif;
@@ -168,21 +169,20 @@ class CategoriesController extends CategoriesAppController {
  
 	}
 
-	/**
-	 * Admin delete for category.
-	 *
-	 * @param string $id, category id 
-	 */
+/**
+ * Admin delete for category.
+ *
+ * @param string $id, category id 
+ */
 	function delete($id = null) {
 		$this->__delete('Category', $id);
 	} 
 	
 
-	/**
-	 * This function sets the variables when picking a category for a model/foreign_key combo
-	 *
-	 * @todo 		Make it so that we could also use the $categoryId to set where the choosing starts.
-	 */
+/**
+ * This function sets the variables when picking a category for a model/foreign_key combo
+ *
+ */
 	function choose_category($categoryId = null) {
 		App::Import('Model', 'Catalogs.Catalog');
 		$catalog = new Catalog();
@@ -199,11 +199,11 @@ class CategoriesController extends CategoriesAppController {
 
 
 
-	/**
-	 * This function sets the variables when picking a category for a model/foreign_key combo
-	 *
-	 * @todo 		Make it so that we could also use the $categoryId to set where the choosing starts.
-	 */
+/**
+ * This function sets the variables when picking a category for a model/foreign_key combo
+ *
+ * @todo 		Make it so that we could also use the $categoryId to set where the choosing starts.
+ */
 	function admin_choose_category($categoryId = null) {
 		if (!empty($this->request->params['named']['catalog'])) {
 			$this->set('catalogIdUrl', $this->request->params['named']['catalog']);
