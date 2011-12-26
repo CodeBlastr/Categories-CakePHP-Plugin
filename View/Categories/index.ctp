@@ -15,7 +15,6 @@
 	<!--th><?php echo $this->Paginator->sort('user_id');?></th-->
 	<th><?php echo $this->Paginator->sort('name');?></th>
 	<th><?php echo $this->Paginator->sort('description');?></th>
-	<th><?php echo $this->Paginator->sort('created');?></th>
 	<th class="actions"><?php echo __d('categories', 'Actions');?></th>
 </tr>
 <?php
@@ -37,10 +36,7 @@ foreach ($categories as $category):
 			<?php echo $category['Category']['name']; ?>
 		</td>
 		<td>
-			<?php echo $category['Category']['description']; ?>
-		</td>
-		<td>
-			<?php echo $category['Category']['created']; ?>
+			<?php echo $this->Text->truncate(strip_tags($category['Category']['description']), 100, array('ending' => '...')); ?>
 		</td>
 		<td class="actions">
 			<?php echo $this->Html->link(__d('categories', 'View', true), array('action'=>'view', $category['Category']['id'])); ?>
@@ -57,7 +53,7 @@ foreach ($categories as $category):
 
 <?php 
 // set the contextual menu items
-echo $this->Element('context_menu', array('menus' => array(
+$this->set('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Categories',
 		'items' => array(
