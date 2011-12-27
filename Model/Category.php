@@ -64,17 +64,17 @@ class Category extends CategoriesAppModel {
 		'ChildCategory' => array(
 			'className' => 'Categories.Category',
 			'foreignKey' => 'id',
-			'dependent' => false,
+			'dependent' => true,
 			),
 		'CategoryOption' => array(
 			'className' => 'Categories.CategoryOption',
 			'foreignKey' => 'category_id',
-			'dependent' => false
+			'dependent' => true
 			),
 		'Categorized' => array(
 			'className' => 'Categories.Categorized',
 			'foreignKey' => 'category_id',
-			'dependent' => false
+			'dependent' => true
 			),
 		'Gallery' => array(
 			'className' => 'Galleries.Gallery',
@@ -94,7 +94,7 @@ class Category extends CategoriesAppModel {
 		'Gallery' => array(
 			'className' => 'Galleries.Gallery',
 			'foreignKey' => 'foreign_key',
-			'dependent' => false,
+			'dependent' => true,
 			'conditions' => array('Gallery.model' => 'Category'),
 			'fields' => '',
 			'order' => ''
