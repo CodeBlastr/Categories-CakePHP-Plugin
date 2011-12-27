@@ -23,11 +23,17 @@
   </div>
 </div>
 
-<div class="actions">
-	<ul>
-    	<li><?php echo $this->Html->link('Add Category', array('plugin' => 'categories', 'controller' => 'categories', 'action' => 'add')); ?></li>
-    </ul>
-</div>
+<?php 
+// set the contextual menu items
+$this->set('context_menu', array('menus' => array(
+	array(
+		'heading' => 'Categories',
+		'items' => array(
+			$this->Html->link('Add Category', array('plugin' => 'categories', 'controller' => 'categories', 'action' => 'add')),
+			)
+		),
+	)));
+?>
 
 <script type="text/javascript"> 
 	$(function() {
