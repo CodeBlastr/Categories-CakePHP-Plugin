@@ -25,6 +25,7 @@ class CategoriesController extends CategoriesAppController {
 	
 	public $allowedActions = array('requestForItems');
 	public $uses = 'Categories.Category';
+	public $paginate = array();
 
 /**
  * Name
@@ -45,7 +46,7 @@ class CategoriesController extends CategoriesAppController {
  *
  * @return void
  */
-	function beforeFilter() {
+	public function beforeFilter() {
 		parent::beforeFilter();
 		$this->Auth->allow('view', 'index');
 		//debug($this->modelClass);
@@ -53,19 +54,19 @@ class CategoriesController extends CategoriesAppController {
 	}
 
 /**
- * Admin index for category.
+ * Index for category.
  * 
  */
-	function index() {
+	public function index() {
 		$this->Category->recursive = 0;
 		$this->set('categories', $this->paginate()); 
 	}
 
 /**
- * Admin index
+ * Tree
  *
  */
-	function tree() {
+	public function tree() {
 		#$this->Category->recursive = 0;
 		$this->helpers[] = 'Utils.Tree';
 		$params['order'] = array('Category.name', 'Category.lft');
@@ -77,16 +78,17 @@ class CategoriesController extends CategoriesAppController {
 	}
 
 /**
- * Admin view for category.
+ * View for category.
  *
  * @param string $slug, category slug 
  */
-	function view($slug = null) {
+	public function view($slug = null) {
 		try {
 			# this is put here specifically for the CatalogItems category, so if you change it
 			# make sure that /categories/categories/view/X  (where X = a catalog item related category) looks good still.
 			$category = $this->Category->view($slug);  // equals the category, and contains related items grouped by model
-			$this->paginate = array('conditions' => array('ChildCategory.parent_id' => $category['Category']['id']), 'fields' => array('id', 'name'));
+			$this->paginate['conditions'] = array('ChildCategory.parent_id' => $category['Category']['id']); 
+			$this->paginate['fields'] = array('id', 'name');
 			$childCategories = $this->paginate('ChildCategory');
 		} catch (Exception $e) {
 			$this->Session->setFlash($e->getMessage());
@@ -97,11 +99,11 @@ class CategoriesController extends CategoriesAppController {
 	
 
 /**
- * Admin add for category.
+ * Add for category.
  * 
  * @todo 		Make two named parameters work.  categorize:{model to categorize}, parent:{parent category}.  These will prefill the the drop downs.  If only parent then we'll have to look up the model of that parent to set it.
  */
-	function add($categoryId = null) {
+	public function add($categoryId = null) {
 		if (!empty($this->request->params['named']['parent']) && empty($this->request->params['named']['model'])) :
 			$parent = $this->Category->find('first', array('conditions' => array('Category.id' => $this->request->params['named']['parent']))); 
 			if (!empty($parent['Category']['model'])) : 
@@ -144,12 +146,12 @@ class CategoriesController extends CategoriesAppController {
 		$this->set(compact('models', 'parents', 'types'));
 	}
 
-	/**
-	 * Admin edit for category.
-	 *
-	 * @param string $id, category id 
-	 */
-	function edit($id = null) {
+/**
+ * Edit for category.
+ *
+ * @param string $id, category id 
+ */
+	public function edit($id = null) {
 		try {
 			$result = $this->Category->edit($id, null, $this->request->data);
 			if ($result === true) {
@@ -175,7 +177,7 @@ class CategoriesController extends CategoriesAppController {
  *
  * @param string $id, category id 
  */
-	function delete($id = null) {
+	public function delete($id = null) {
 		$this->__delete('Category', $id);
 	} 
 	
@@ -184,7 +186,7 @@ class CategoriesController extends CategoriesAppController {
  * This function sets the variables when picking a category for a model/foreign_key combo
  *
  */
-	function choose_category($categoryId = null) {
+	public function choose_category($categoryId = null) {
 		App::Import('Model', 'Catalogs.Catalog');
 		$catalog = new Catalog();
 		if (!empty($this->request->params['named']['catalog'])) {
@@ -205,7 +207,7 @@ class CategoriesController extends CategoriesAppController {
  *
  * @todo 		Make it so that we could also use the $categoryId to set where the choosing starts.
  */
-	function admin_choose_category($categoryId = null) {
+	public function admin_choose_category($categoryId = null) {
 		if (!empty($this->request->params['named']['catalog'])) {
 			$this->set('catalogIdUrl', $this->request->params['named']['catalog']);
 		}
@@ -218,12 +220,12 @@ class CategoriesController extends CategoriesAppController {
 	}
 	
 	
-	/**
-	 * get_children()
-	 * Get children of parentId if parent id is category id else if catalog id find direct children
-	 * todo: if used further move this logic to model
-	 */
-	function get_children() {
+/**
+ * get_children()
+ * Get children of parentId if parent id is category id else if catalog id find direct children
+ * todo: if used further move this logic to model
+ */
+	public function get_children() {
 		$parent = null;
 		$parentId = null;
 		if (isset($this->request->params['named']['parentId']))
@@ -256,11 +258,11 @@ class CategoriesController extends CategoriesAppController {
 			echo json_encode($directChildren);
 	}
 	
-	/*
-	 * get_all()
-	 * Get all of the options based on type
-	 */
-	function get_all($type, $model = null) {
+/*
+ * get_all()
+ * Get all of the options based on type
+ */
+	public function get_all($type, $model = null) {
 		$this->layout = false;
 		$conditions = !empty($model) ? array('Category.model' => $model) : array('Category.model' => null);
 		if ($type == 'Category' || $type == 'Attribute Group' || $type == 'Option Group') {
@@ -275,12 +277,12 @@ class CategoriesController extends CategoriesAppController {
 		echo json_encode($data);
 	}
 	
-	/**
-	 * admin_categorized()
-	 * Assigns categories to the model passed in Named Parameter
-	 *
-	 */
-	function categorized() {
+/**
+ * categorized()
+ * Assigns categories to the model passed in Named Parameter
+ *
+ */
+	public function categorized() {
 		if (!empty($this->request->data)) {
 			try {
 				$result = $this->Category->categorized($this->Auth->user('id'),
@@ -312,15 +314,15 @@ class CategoriesController extends CategoriesAppController {
 	}
 	
 	
-	/**
-	 * Find category items and return them for a requestAction call.
-	 * 
-	 * @param {int}		The id of the category
-	 * @param {int}		The number of records to return per page
-	 * @param {string}	The model name we're looking for.
-	 * @todo			We had a problem (explained below) with pulling recursive data. It should be fixed.
-	 */
-	function requestForItems($id = null, $limit = 20, $model = null) {
+/**
+ * Find category items and return them for a requestAction call.
+ * 
+ * @param {int}		The id of the category
+ * @param {int}		The number of records to return per page
+ * @param {string}	The model name we're looking for.
+ * @todo			We had a problem (explained below) with pulling recursive data. It should be fixed.
+ */
+	public function requestForItems($id = null, $limit = 20, $model = null) {
 		if (!$this->RequestHandler->isAjax() && !$this->_isRequestedAction()) {
 			return $this->cakeError('404');
 		}
@@ -362,7 +364,7 @@ class CategoriesController extends CategoriesAppController {
 	
 	
 	
-	function _isRequestedAction() {
+	private function _isRequestedAction() {
 		return array_key_exists('requested', $this->request->params);
 	}
 }
