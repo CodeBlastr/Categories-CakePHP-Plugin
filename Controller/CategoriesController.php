@@ -22,6 +22,7 @@ App::import('Model', 'Categories.Category');
  * @subpackage categories.controllers
  */
 class CategoriesController extends CategoriesAppController {
+	
 	public $allowedActions = array('requestForItems');
 	public $uses = 'Categories.Category';
 

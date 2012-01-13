@@ -102,11 +102,11 @@ class Category extends CategoriesAppModel {
 	);
 
 
-	/**
-	 * hasAndBelongsToMany associations
-	 *
-	 * @var array $hasAndBelongsToMany
- 	 *//*
+/**
+ * hasAndBelongsToMany associations
+ *
+ * @var array $hasAndBelongsToMany
+ *//*
 	var $hasAndBelongsToMany = array(
         'CategoryItem' => array(
             'className' => 'Categories.Categorized',
@@ -154,13 +154,13 @@ class Category extends CategoriesAppModel {
 	}
 	
 	
-	/**
-	 * Adds a new record to the database to category and CategoryOption.
-	 *
-	 * @param string $userId, user id
-	 * @param array post data, should be Contoller->data
-	 * @return array
-	 */
+/**
+ * Adds a new record to the database to category and CategoryOption.
+ *
+ * @param string $userId, user id
+ * @param array post data, should be Contoller->data
+ * @return array
+ */
 	public function add($userId = null, $data = null) {
 		if (!empty($data)) {
 			$data['Category']['user_id'] = $userId;
@@ -257,9 +257,9 @@ class Category extends CategoriesAppModel {
 			$params,
 			));
 		
-		if (empty($category)) :
+		if (empty($category)) {
 			throw new Exception(__d('categories', 'Invalid Category', true));
-		else :
+		} else {
 			$temp = '';
 			$associated = null;
 			foreach($models as $mod) {
@@ -269,13 +269,20 @@ class Category extends CategoriesAppModel {
 				}
 				$associated[$temp][] =  $mod['foreign_key'];
 			}
-			if (!empty($associated)) : foreach($associated as $model => $records) :
-				$res = ClassRegistry::init($model)->find('all',
-						array('conditions'=>array($model.'.id'=>$records)));
-				$category['Associated'][$model] = $res;
-				//$category['Associated'][] = $model;
-			endforeach; endif;
-		endif;
+			if (!empty($associated)) {
+				foreach($associated as $model => $records) {
+					App::uses($model, ZuhaInflector::pluginize($model).'.Model');
+					$Model = new $model;
+					$res = $Model->find('all', array(
+						'conditions' => array(
+							$model.'.id' => $records
+							),
+						));
+					$category['Associated'][$model] = $res;
+					//$category['Associated'][] = $model;
+				} // end associated loop
+			} // end associated !empty check
+		} // end category empty check
 		return $category;
 	}
 
