@@ -101,28 +101,31 @@ class CategoriesController extends CategoriesAppController {
 /**
  * Add for category.
  * 
- * @todo 		Make two named parameters work.  categorize:{model to categorize}, parent:{parent category}.  These will prefill the the drop downs.  If only parent then we'll have to look up the model of that parent to set it.
  */
 	public function add($categoryId = null) {
 		if (!empty($this->request->params['named']['parent']) && empty($this->request->params['named']['model'])) :
-			$parent = $this->Category->find('first', array('conditions' => array('Category.id' => $this->request->params['named']['parent']))); 
+			$parent = $this->Category->find('first', array(
+				'conditions' => array(
+					'Category.id' => $this->request->params['named']['parent']
+					)
+				)); 
 			if (!empty($parent['Category']['model'])) : 
 				$this->redirect(array('action' => 'add', 'model' => $parent['Category']['model'], 'parent' => $parent['Category']['id']));
 			endif;
 		endif;
 		
-		if(!empty($this->request->data)) :
+		if(!empty($this->request->data)) {
 			try {
 				$result = $this->Category->add($this->Auth->user('id'), $this->request->data);
 				if ($result === true) {
-					if (!empty($this->request->data['Category']['parent_id']) && empty($this->request->data['Category']['type'])) : 
+					if (!empty($this->request->data['Category']['parent_id']) && empty($this->request->data['Category']['type'])) {
 						# if there was a parent_id then we can assign categories to items
 						$this->Session->setFlash(__d('categories', 'Category Saved.  You can assign categories here.', true));
 						$this->redirect(array('action' => 'categorized', 'type' => $this->request->data['Category']['model']));
-					else :
+					} else {
 						$this->Session->setFlash(__d('categories', 'Category Saved', true));
 						$this->redirect(array('action' => 'tree', 'model' => $this->request->data['Category']['model']));
-					endif;
+					} 
 				}
 			} catch (Exception $e) {
 				$this->request->data['Category']['model'] = !empty($this->request->data['Category']['model']) ? $this->request->data['Category']['model'] : null;
@@ -131,7 +134,7 @@ class CategoriesController extends CategoriesAppController {
 				$this->Session->setFlash($e->getMessage());
 				$this->redirect(array('action' => 'index'));
 			}
-		endif;
+		} // end data check
 		
 		if (!empty($this->request->data) && !empty($categoryId)) {
 			$this->request->data['Category']['category_id'] = $categoryId;
@@ -141,8 +144,9 @@ class CategoriesController extends CategoriesAppController {
 		$models = $this->Category->listModels();
 		$parents = $this->Category->generateTreeList();
 		$this->request->data['Category']['parent_id'] = !empty($this->request->params['named']['parent']) ? $this->request->params['named']['parent'] : null;
+		$this->request->data['Category']['type'] = !empty($this->request->params['named']['type']) ? $this->request->params['named']['type'] : null;
 		#$users = $this->Category->User->find('list');
-		$types = $this->Category->get_types();
+		$types = $this->Category->getTypes();
 		$this->set(compact('models', 'parents', 'types'));
 	}
 
@@ -173,7 +177,7 @@ class CategoriesController extends CategoriesAppController {
 	}
 
 /**
- * Admin delete for category.
+ * Delete for category.
  *
  * @param string $id, category id 
  */
@@ -197,25 +201,6 @@ class CategoriesController extends CategoriesAppController {
 			$this->set('catalogs', $catalog->find('list', array('conditions'=>array('Catalog.id'=>$catalog_id))));
 		} else {
 			$this->set('catalogs', $catalog->Catalog->find('list'));
-		}
-	}
-
-
-
-/**
- * This function sets the variables when picking a category for a model/foreign_key combo
- *
- * @todo 		Make it so that we could also use the $categoryId to set where the choosing starts.
- */
-	public function admin_choose_category($categoryId = null) {
-		if (!empty($this->request->params['named']['catalog'])) {
-			$this->set('catalogIdUrl', $this->request->params['named']['catalog']);
-		}
-		else if (!empty($this->request->data)) {
-			$catalog_id = $this->request->data['CatalogItem']['catalog_id'];
-			$this->set('catalogs', $this->Category->Catalog->find('list', array('conditions'=>array('Catalog.id'=>$catalog_id))));
-		} else {
-			$this->set('catalogs', $this->Category->Catalog->find('list'));
 		}
 	}
 	
@@ -265,14 +250,20 @@ class CategoriesController extends CategoriesAppController {
 	public function get_all($type, $model = null) {
 		$this->layout = false;
 		$conditions = !empty($model) ? array('Category.model' => $model) : array('Category.model' => null);
+				
 		if ($type == 'Category' || $type == 'Attribute Group' || $type == 'Option Group') {
 			$data = $this->Category->generateTreeList($conditions);
-		} else if ($model = 'Catalog') {
+		} else if ($model == 'Catalog') {
 			$parent_type = explode(' ', $type);
-			$data = $this->Category->CategoryOption->generateTreeList(array(
+			$data = $this->Category->CategoryOption->find('all', array(
+				'conditions' => array(
 					'CategoryOption.type' => $parent_type[0]. ' Group',
+					),
+				'contain' => array(
+					'Category',
+					),
 				)) ;
-						
+			$data = Set::combine($data, '{n}.CategoryOption.id', array('{0} {1}', '{n}.Category.name', '{n}.CategoryOption.name'));		
 		}
 		echo json_encode($data);
 	}

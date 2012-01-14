@@ -324,13 +324,13 @@ class Category extends CategoriesAppModel {
 		}
 	}
 	
-	public function get_types() {
+	public function getTypes() {
 		return array(
 			'Category' => 'Category',
 			'Attribute Group' => '--Attribute Group',
 		 	'Attribute Type' => '-- --Attribute Type',
-			'Option Group' => '--Option Group',
-			'Option Type' => '-- --Option Type'
+			//'Option Group' => '--Option Group',
+			//'Option Type' => '-- --Option Type'
 			);
 	}
 	

@@ -1,4 +1,5 @@
 <?php
+App::uses('CategoriesAppModel', 'Categories.Model');
 /**
  * Copyright 2010, Cake Development Corporation (http://cakedc.com)
  *
@@ -23,7 +24,20 @@ class CategoryOption extends CategoriesAppModel {
  * @var string
  */
 	public $name = 'CategoryOption';
+	
+/**
+ * ActsAs
+ *
+ * @var array
+ */
 	public $actsAs = array('Tree');
+
+/**
+ * Validation rules
+ *
+ * @var array
+ */
+	public $validate = array();
 
 /**
  * Table
@@ -32,7 +46,9 @@ class CategoryOption extends CategoriesAppModel {
  */
 	public $belongsTo = array(
 		'Category' => array(
-			'className' => 'Categories.Category')
+			'className' => 'Categories.Category',
+			'foreignKey' => 'category_id',
+			),
 		);
 
 /**
@@ -46,16 +62,18 @@ class CategoryOption extends CategoriesAppModel {
 			'foreignKey' => 'category_option_id',
 			'dependent' => false),
 		);
-
-/**
- * Validation rules
- *
- * @var array
- */
-	public $validate = array();
 	
+	public function __construct($id = false, $table = null, $ds = null) {
+    	parent::__construct($id, $table, $ds);
+ 		$this->order = $this->alias . '.category_id';
+    }
+	
+/**
+ * categorized option
+ *
+ * @todo Add some comments to this.
+ */
 	public function categorized_option($userId = null, $data = null, $model) {
-
 		$ret = false;
 		$catOpt = array();
 		$records = array();
