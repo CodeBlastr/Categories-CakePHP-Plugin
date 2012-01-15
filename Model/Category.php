@@ -195,7 +195,7 @@ class Category extends CategoriesAppModel {
 				if (!empty($categoryId)) {
 					$this->delete($categoryId);
 				}
-				throw new Exception(__d('categories', 'Could not save the category, please check your inputs.', true));
+				throw new Exception(__d('categories', 'Could not save the category, please check your inputs.'));
 			}
 			return $return;
 		}
@@ -258,7 +258,7 @@ class Category extends CategoriesAppModel {
 			));
 		
 		if (empty($category)) {
-			throw new Exception(__d('categories', 'Invalid Category', true));
+			throw new Exception(__d('categories', 'Invalid Category'));
 		} else {
 			$temp = '';
 			$associated = null;
@@ -302,7 +302,7 @@ class Category extends CategoriesAppModel {
 				)));
 		
 		if (empty($category)) {
-			throw new Exception(__d('categories', 'Invalid Category', true));
+			throw new Exception(__d('categories', 'Invalid Category'));
 		}
 
 		$this->request->data['category'] = $category;
@@ -356,5 +356,16 @@ class Category extends CategoriesAppModel {
 			$ret = true;
 		}
 		return $ret;
+	}
+	
+	public function recordCount($categoryId) {
+		$count = $this->Categorized->find('count', array('conditions' => array('Categorized.category_id' => $categoryId)));
+		$data['Category']['id'] = $categoryId;
+		$data['Category']['record_count'] = $count;
+		if ($this->save($data)) {
+			return true;
+		} else {
+			throw new Exception(__d('categories', 'Categor record count update failed.'));
+		}			
 	}
 }
