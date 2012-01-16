@@ -29,11 +29,10 @@ $this->set('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Categories',
 		'items' => array(
-			$this->Html->link('Add Category', array('plugin' => 'categories', 'controller' => 'categories', 'action' => 'add')),
+			$this->Html->link('Add', array('plugin' => 'categories', 'controller' => 'categories', 'action' => 'add', 'model' => $model, 'type' => 'Category')),
 			)
 		),
-	)));
-?>
+	))); ?>
 
 <script type="text/javascript"> 
 	$(function() {

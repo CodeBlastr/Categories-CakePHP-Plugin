@@ -54,27 +54,12 @@ class CategoriesController extends CategoriesAppController {
 	}
 
 /**
- * Index for category.
+ * Index method.
  * 
  */
 	public function index() {
 		$this->Category->recursive = 0;
 		$this->set('categories', $this->paginate()); 
-	}
-
-/**
- * Tree
- *
- */
-	public function tree() {
-		#$this->Category->recursive = 0;
-		$this->helpers[] = 'Utils.Tree';
-		$params['order'] = array('Category.name', 'Category.lft');
-		$params['conditions'] = !empty($this->request->params['named']['model']) ? array('Category.model' => $this->request->params['named']['model']) : null;
-		$categories = $this->Category->find('threaded', $params);
-		#$categoryOptions = $this->Category->CategoryOption->find('threaded', array('order' => 'CategoryOption.lft'));
-		$this->set(compact('categories'));
-		#$this->set(compact('categoryOptions'));
 	}
 
 /**
@@ -140,14 +125,21 @@ class CategoriesController extends CategoriesAppController {
 			$this->request->data['Category']['category_id'] = $categoryId;
 		}
 		
-		$this->request->data['Category']['model'] = !empty($this->request->params['named']['model']) ? $this->request->params['named']['model'] : null;
+		#_viewVars
 		$models = $this->Category->listModels();
 		$parents = $this->Category->generateTreeList();
-		$this->request->data['Category']['parent_id'] = !empty($this->request->params['named']['parent']) ? $this->request->params['named']['parent'] : null;
-		$this->request->data['Category']['type'] = !empty($this->request->params['named']['type']) ? $this->request->params['named']['type'] : null;
-		#$users = $this->Category->User->find('list');
+		$parentId = !empty($this->request->params['named']['parent']) ? $this->request->params['named']['parent'] : null;
+		$parent = !empty($parentId) ? $parents[$parentId] : '';
+		$type = !empty($this->request->params['named']['type']) ? $this->request->params['named']['type'] : 'Category';
+		$model = !empty($this->request->params['named']['model']) ? $this->request->params['named']['model'] : '';
 		$types = $this->Category->getTypes();
-		$this->set(compact('models', 'parents', 'types'));
+		$pageTitleForLayout = !empty($parent) ? __('Add %s %s to %s', $model, $type, $parent) : __('Add %s %s', $model, $type);
+		
+		$this->request->data['Category']['model'] = $model;
+		$this->request->data['Category']['type'] = $type;
+		$this->request->data['Category']['parent_id'] = $parentId;
+		$this->set('page_title_for_layout', $pageTitleForLayout);
+		$this->set(compact('models', 'parents', 'types', 'model'));
 	}
 
 /**
@@ -184,6 +176,24 @@ class CategoriesController extends CategoriesAppController {
 	public function delete($id = null) {
 		$this->__delete('Category', $id);
 	} 
+
+/**
+ * Tree method
+ *
+ * @param void
+ * @return void
+ */
+	public function tree() {
+		$this->helpers[] = 'Utils.Tree';
+		$params['order'] = array('Category.name', 'Category.lft');
+		
+		if (!empty($this->request->params['named']['model'])) {
+			$params['conditions']['Category.model'] = $this->request->params['named']['model'];
+		}
+		$model = !empty($this->request->params['named']['model']) ? $this->request->params['named']['model'] : null;
+		$categories = $this->Category->find('threaded', $params);
+		$this->set(compact('categories', 'model'));		
+	}
 	
 
 /**

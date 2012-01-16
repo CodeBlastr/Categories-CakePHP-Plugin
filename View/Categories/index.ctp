@@ -39,9 +39,9 @@ foreach ($categories as $category):
 			<?php echo $this->Text->truncate(strip_tags($category['Category']['description']), 100, array('ending' => '...')); ?>
 		</td>
 		<td class="actions">
-			<?php echo $this->Html->link(__d('categories', 'View', true), array('action'=>'view', $category['Category']['id'])); ?>
-			<?php echo $this->Html->link(__d('categories', 'Edit', true), array('action'=>'edit', $category['Category']['id'])); ?>
-			<?php echo $this->Html->link(__d('categories', 'Delete', true), array('action'=>'delete', $category['Category']['id']), null, sprintf(__d('categories', 'Are you sure you want to delete # %s?', true), $category['Category']['id'])); ?>
+			<?php echo $this->Html->link(__d('categories', 'View'), array('action' => 'view', $category['Category']['id'])); ?>
+			<?php echo $this->Html->link(__d('categories', 'Edit'), array('action' => 'edit', $category['Category']['id'])); ?>
+			<?php echo $this->Html->link(__d('categories', 'Delete'), array('action' => 'delete', $category['Category']['id']), null, sprintf(__d('categories', 'Are you sure you want to delete # %s?'), $category['Category']['id'])); ?>
 		</td>
 	</tr>
 <?php endforeach; ?>
@@ -57,8 +57,8 @@ $this->set('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Categories',
 		'items' => array(
-			$this->Html->link(__d('categories', 'New Category', true), array('action' => 'add')),
-			$this->Html->link(__d('categories', 'Category Tree', true), array('action' => 'tree')),
+			$this->Html->link(__d('categories', 'Add'), array('action' => 'add'), array('class' => 'add')),
+			$this->Html->link(__d('categories', 'List'), array('action' => 'tree')),
 			)
 		),
 	)));

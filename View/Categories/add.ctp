@@ -1,5 +1,5 @@
 <div class="categories form">
-<h2><?php echo !empty($this->request->data['Category']['type']) ? __('Add a New %s <span id="parentLabel"></span>', $this->request->data['Category']['type']) : __('Add a New Category'); ?></h2>
+<h2><?php echo $page_title_for_layout; ?></h2>
 <?php echo $this->Form->create('Category', array('type' => 'file'));?>
 
 	<div id ="ajax"></div>
@@ -26,11 +26,23 @@
 	echo $this->Form->input('GalleryImage.mimetype', array('type' => 'hidden'));
 	echo $this->Form->input('GalleryImage.filesize', array('type' => 'hidden'));
 	echo $this->Form->input('description', array('type' => 'richtext'));
-	echo $this->Form->submit(__d('categories', 'Submit', true));?>
+	echo $this->Form->submit(__d('categories', 'Submit'));?>
 </fieldset>
 
 </div>
 
+<?php 
+// set the contextual menu items
+$this->set('context_menu', array('menus' => array(
+	array(
+		'heading' => 'Categories',
+		'items' => array(
+			$this->Html->link('List', array('plugin' => 'categories', 'controller' => 'categories', 'action' => 'tree', 'model' => $model)),
+			)
+		),
+	))); ?>
+    
+    
 <script type="text/javascript">
 <?php
 if (!empty($this->request->data['Category']['parent_id'])) {
@@ -50,11 +62,12 @@ $('#CategoryModel').change(function(e){
 
 
 function call_select() {
-	var model =  $('#CategoryModel').val();
-	if (model == 'Catalog') {
-		$('#CategoryType').parent().show();
+	var model =  $("#CategoryModel").val();
+	if (model == "Catalog") {
+		$("#CategoryType").parent().show();
+		$("#GalleryImageFilename").parent().hide();
 	} else {
-		$('#CategoryType').parent().hide();
+		//$('#CategoryType').parent().hide();
 		$('#CategoryType').val('Category');
 	}
 	$('#ajax').empty().html('<?php echo $this->Html->image('ajax-loader.gif'); ?>');
