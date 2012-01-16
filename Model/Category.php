@@ -368,4 +368,26 @@ class Category extends CategoriesAppModel {
 			throw new Exception(__d('categories', 'Categor record count update failed.'));
 		}			
 	}
+	
+	
+	public function treeCategoryOptions($type = 'threaded', $options) {
+		
+		$options['fields'] = array('id', 'parent_id', 'name');
+		$options['contain'] = array(
+			'CategoryOption' => array(
+				'conditions' => array(
+					'CategoryOption.parent_id' => null,
+					),
+				'fields' => array(
+					'name',
+					'category_id',
+					'id',
+					), 
+				)
+			);
+		$categories = $this->find('threaded', $options);
+		
+		debug($categories);
+		return $categories;
+	}
 }

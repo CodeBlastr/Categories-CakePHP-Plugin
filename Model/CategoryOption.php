@@ -60,7 +60,13 @@ class CategoryOption extends CategoriesAppModel {
 		'CategorizedOption' => array(
 			'className' => 'Categories.CategorizedOption',
 			'foreignKey' => 'category_option_id',
-			'dependent' => false),
+			'dependent' => false
+			),
+		'ChildOption' => array(
+			'className' => 'Categories.CategoryOption',
+			'foreignKey' => 'parent_id',
+			'dependent' => true
+			),
 		);
 	
 	public function __construct($id = false, $table = null, $ds = null) {

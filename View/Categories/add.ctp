@@ -21,12 +21,16 @@
 		echo $this->request->data['Category']['type'] == 'Attribute Type' ? $this->Form->input('Category.parent_id', array('label' => 'What is the parent attribute group?', 'empty' => true)) : $this->Form->input('Category.parent_id', array('label' => 'What is the parent category?', 'empty' => true));
     }
 	echo !empty($this->request->data['Category']['type']) ? $this->Form->input('name', array('label' => $this->request->data['Category']['type'] . ' Name')) : $this->Form->input('name', array('label' => 'Name'));
-	echo $this->Form->input('GalleryImage.filename', array('type' => 'file', 'label' => 'Category thumbnail'));
-	echo $this->Form->input('GalleryImage.dir', array('type' => 'hidden'));
-	echo $this->Form->input('GalleryImage.mimetype', array('type' => 'hidden'));
-	echo $this->Form->input('GalleryImage.filesize', array('type' => 'hidden'));
-	echo $this->Form->input('description', array('type' => 'richtext'));
-	echo $this->Form->submit(__d('categories', 'Submit'));?>
+	
+	if ($type == 'Category') {
+		echo $this->Form->input('GalleryImage.filename', array('type' => 'file', 'label' => 'Category thumbnail'));
+		echo $this->Form->input('GalleryImage.dir', array('type' => 'hidden'));
+		echo $this->Form->input('GalleryImage.mimetype', array('type' => 'hidden'));
+		echo $this->Form->input('GalleryImage.filesize', array('type' => 'hidden'));
+		echo $this->Form->input('description', array('type' => 'richtext'));
+	}
+	
+	echo $this->Form->end(__d('categories', 'Save'));?>
 </fieldset>
 
 </div>
@@ -65,10 +69,16 @@ function call_select() {
 	var model =  $("#CategoryModel").val();
 	if (model == "Catalog") {
 		$("#CategoryType").parent().show();
-		$("#GalleryImageFilename").parent().hide();
 	} else {
 		//$('#CategoryType').parent().hide();
 		$('#CategoryType').val('Category');
+	}
+	if ($("#CategoryType").val() == "Category") {
+		$("#GalleryImageFilename").parent().show();
+		$("#CategoryDescription").parent().parent().show();
+	} else {	
+		$("#GalleryImageFilename").parent().hide();
+		$("#CategoryDescription").parent().parent().hide();
 	}
 	$('#ajax').empty().html('<?php echo $this->Html->image('ajax-loader.gif'); ?>');
 	var type =  $('#CategoryType').val();
@@ -91,12 +101,12 @@ function create_select(data, type) {
 		for (i in response) {
 			if (i == originalParent) {
 		    	res += '<option value="' + i + '" selected = "selected">' + response[i] + '</option>';
-				$("#parentLabel").html("for " + response[i]);
+				$("#CategoryName").html("for " + response[i]);
 			} else {
 		    	res += '<option value="' + i + '">' + response[i] + '</option>';
 			}				
 		}
-    	$('#CategoryParentId').html(res);
+    	$('.categories h2').html(res);
 	}
 	else {
 		var res = 'No parent available';

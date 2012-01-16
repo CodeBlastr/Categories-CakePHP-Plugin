@@ -1,4 +1,3 @@
-
 <div class="categories tree">
   <h2><?php echo __d('categories', 'Attributes');?></h2>
   <?php 

@@ -14,10 +14,7 @@
 			'/categories/css/jquery.treeview',
 			), 
 		null, 
-		array('inline' => false));
-	#echo $this->Html->scriptBlock('App.pagesAdminIndex.init();');
-	#debug($categories);
-?>
+		array('inline' => false)); ?>
   <div id="categoryMenu"> <?php echo $this->Tree->generate($categories, array('element' => 'categories/tree_item', 'class' => 'categorytree', 'id' => 'categorytree')); ?>
     <?php #echo $this->Element('thread', array('name' => 'CategoryOption/name', 'data' => $categoryOptions)); ?>
   </div>
@@ -39,3 +36,6 @@ $this->set('context_menu', array('menus' => array(
 		$('#categorytree').treeview();
 	})
 </script>
+
+<?php 
+debug($categories); ?>

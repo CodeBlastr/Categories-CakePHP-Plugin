@@ -127,9 +127,27 @@ class CategoriesController extends CategoriesAppController {
 		
 		#_viewVars
 		$models = $this->Category->listModels();
-		$parents = $this->Category->generateTreeList();
+		$parents = $this->Category->generateTreeList();		
 		$parentId = !empty($this->request->params['named']['parent']) ? $this->request->params['named']['parent'] : null;
-		$parent = !empty($parentId) ? $parents[$parentId] : '';
+		
+		if (!empty($this->request->params['named']['type']) && $this->request->params['named']['type'] == 'Attribute Type') {
+			$options = $this->Category->CategoryOption->find('threaded');
+			$parentOptions = Set::combine($options, '{n}.CategoryOption.id', '{n}.CategoryOption.name');
+			if (!empty($parentOptions) && !empty($parentOptions[$parentId])) {
+				$parentOption = $parentOptions[$parentId];
+			}
+			if (!empty($parentOption)) {
+				$parentCategories = Set::combine($options, '{n}.CategoryOption.name', '{n}.CategoryOption.category_id');
+				if (!empty($parentCategories[$parentOption])) {
+					$optionParentId = $parentCategories[$parentOption];
+				}
+			}
+		}
+		
+		$parent = !empty($optionParentId) && !empty($parents[$optionParentId]) ? $parents[$optionParentId] : ''; // Shirts
+		$parent = !empty($parents[$parentId]) ? $parents[$parentId] : $parent; // Shirts
+		$parent = !empty($parentOption) ? Inflector::singularize($parent) . ' ' . $parentOption : $parent; // Shirt Sizes
+		// shirt sizes
 		$type = !empty($this->request->params['named']['type']) ? $this->request->params['named']['type'] : 'Category';
 		$model = !empty($this->request->params['named']['model']) ? $this->request->params['named']['model'] : '';
 		$types = $this->Category->getTypes();
@@ -139,7 +157,7 @@ class CategoriesController extends CategoriesAppController {
 		$this->request->data['Category']['type'] = $type;
 		$this->request->data['Category']['parent_id'] = $parentId;
 		$this->set('page_title_for_layout', $pageTitleForLayout);
-		$this->set(compact('models', 'parents', 'types', 'model'));
+		$this->set(compact('models', 'parents', 'types', 'model', 'parent', 'type', 'parentId'));
 	}
 
 /**
@@ -148,23 +166,35 @@ class CategoriesController extends CategoriesAppController {
  * @param string $id, category id 
  */
 	public function edit($id = null) {
-		try {
-			$result = $this->Category->edit($id, null, $this->request->data);
-			if ($result === true) {
-				$this->Session->setFlash(__d('categories', 'Category saved', true));
-				$this->redirect(array('action' => 'tree'));
-				
-			} else {
-				$this->request->data = $result;
-			}
-		} catch (Exception $e) {
-			$this->Session->setFlash($e->getMessage());
-			$this->redirect('/');
+		$this->Category->id = $id;
+		if (!$this->Category->exists()) {
+			throw new NotFoundException(__('Invalid order coupon'));
 		}
-		$parents = $this->Category->generateTreeList();
-		$options = $this->Category->CategoryOption->find('all', array('conditions' => array('CategoryOption.category_id' => $id, 'CategoryOption.type' => 'Attribute Group')));
-		#$users = $this->Category->User->find('list');
-		$this->set(compact('parents', 'options'));
+		if ($this->request->is('post') || $this->request->is('put')) {
+			try {
+				$result = $this->Category->edit($id, null, $this->request->data);
+				if ($result === true) {
+					$this->Session->setFlash(__d('categories', 'Category saved', true));
+					$this->redirect(array('action' => 'tree'));
+					
+				} else {
+					$this->request->data = $result;
+				}
+			} catch (Exception $e) {
+				$this->Session->setFlash($e->getMessage());
+				$this->redirect('/');
+			}
+		} else {
+			$this->request->data = $this->Category->read(null, $id);
+			$parents = $this->Category->generateTreeList();
+			$options = $this->Category->CategoryOption->find('all', array(
+				'conditions' => array(
+					'CategoryOption.category_id' => $id, 
+					'CategoryOption.type' => 'Attribute Group'
+					)
+				));
+			$this->set(compact('parents', 'options'));
+		}
  
 	}
 
@@ -185,15 +215,14 @@ class CategoriesController extends CategoriesAppController {
  */
 	public function tree() {
 		$this->helpers[] = 'Utils.Tree';
-		$params['order'] = array('Category.name', 'Category.lft');
-		
-		if (!empty($this->request->params['named']['model'])) {
-			$params['conditions']['Category.model'] = $this->request->params['named']['model'];
-		}
 		$model = !empty($this->request->params['named']['model']) ? $this->request->params['named']['model'] : null;
-		$categories = $this->Category->find('threaded', $params);
+		if (!empty($model)) {
+			$params['conditions']['Category.model'] = $model;
+		}
+		$categories = $this->Category->treeCategoryOptions('threaded', $params);
 		$this->set(compact('categories', 'model'));		
 	}
+
 	
 
 /**
