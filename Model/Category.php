@@ -371,9 +371,8 @@ class Category extends CategoriesAppModel {
 	
 	
 	public function treeCategoryOptions($type = 'threaded', $options) {
-		
 		$options['fields'] = array('id', 'parent_id', 'name');
-		$options['contain'] = array(
+		/*$options['contain'] = array(
 			'CategoryOption' => array(
 				'conditions' => array(
 					'CategoryOption.parent_id' => null,
@@ -384,10 +383,70 @@ class Category extends CategoriesAppModel {
 					'id',
 					), 
 				)
-			);
+			);*/
 		$categories = $this->find('threaded', $options);
 		
-		debug($categories);
+		$categories = $this->_addCategoryOptionToChildren($categories);
+		
 		return $categories;
 	}
+	
+	
+/**
+ * @todo		Make this truly recursive.  Its hard coded to two levels deep right now.
+ */
+	private function _addCategoryOptionToChildren($categories, $recursed = false) {
+		$i=0;
+		foreach ($categories as $category) {
+			$oldChildren = $category['children'];
+			$n=0;
+			foreach ($oldChildren as $oldChild) {
+				$attributeGroups = $this->CategoryOption->find('all', array(
+					'conditions' => array(
+						'CategoryOption.category_id' => $oldChild['Category']['id'],
+						'CategoryOption.type' => 'Attribute Group',
+						),
+					'contain' => array(
+						'children',
+						),
+					));
+				$attributeGroups = $this->_reformatAttributeGroups($attributeGroups);
+				$categories[$i]['children'][$n] = array_merge($oldChild, array('children' => $attributeGroups));
+				$n++;
+			}
+			unset($attributeGroups);
+			$attributeGroups = $this->CategoryOption->find('all', array(
+				'conditions' => array(
+					'CategoryOption.category_id' => $category['Category']['id'],
+					'CategoryOption.type' => 'Attribute Group',
+					),
+				'contain' => array(
+					'children',
+					),
+				));
+			$attributeGroups = $this->_reformatAttributeGroups($attributeGroups);
+			foreach ($attributeGroups as $attributeGroup) {
+				array_push($categories[$i]['children'], $attributeGroup);
+			}
+			$i++;
+		}
+		return $categories;
+	}
+	
+	
+	private function _reformatAttributeGroups($attributeGroups) {
+		$a=0;
+		foreach ($attributeGroups as $attributeGroup) {
+			$b=0;
+			foreach ($attributeGroup['children'] as $type) {
+				unset($attributeGroups[$a]['children'][$b]);
+				$attributeGroups[$a]['children'][$b]['CategoryOption'] = $type;				
+				$b++;
+			}
+			$a++;
+		}
+		return $attributeGroups;
+	}
+
+	
 }
