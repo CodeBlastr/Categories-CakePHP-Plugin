@@ -62,10 +62,11 @@ class CategoryOption extends CategoriesAppModel {
 			'foreignKey' => 'category_option_id',
 			'dependent' => false
 			),
-		'ChildOption' => array(
+		'children' => array(
 			'className' => 'Categories.CategoryOption',
 			'foreignKey' => 'parent_id',
-			'dependent' => true
+			'dependent' => true,
+			'finderQuery' => 'SELECT * FROM `category_options` AS `children` WHERE `children`.`parent_id` = ({$__cakeID__$})',
 			),
 		);
 	

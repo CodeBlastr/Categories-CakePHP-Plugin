@@ -36,6 +36,3 @@ $this->set('context_menu', array('menus' => array(
 		$('#categorytree').treeview();
 	})
 </script>
-
-<?php 
-debug($categories); ?>
