@@ -12,7 +12,6 @@
     <div id="viewNamedescription" class="viewCell name "></div>
     <div id="viewContentdescription" class="viewCell content "> <?php echo $category['Category']['description']; ?> </div>
   </div>
-</div>
 
 <?php 
 if (!empty($childCategories)) :  ?>
@@ -31,16 +30,29 @@ if (!empty($childCategories)) :  ?>
 endif;
 ?>
 
-<div class="categoriesItems">
+<div class="categoriesItems index">
 <?php 
-if (!empty($category['Associated'][key($category['Associated'])])) : 
-	foreach ($category['Associated'] as $model) : 
+if (!empty($category['Associated']) && !empty($category['Associated'][key($category['Associated'])])) { 
+	foreach ($category['Associated'] as $model) {
 		#echo $this->Element('categories/category_items', array('id' => $this->request->params['pass'][0], 'limit' => 9, 'model' => $model)); 
 		echo '<h4 class="categoryItemsLables">' . $category['Category']['name'] . ' Items ' . '</h4>';
 		echo $this->Element('categories/category_items', array('id' => $this->request->params['pass'][0], 'limit' => 9, 'categoryItems' => $model));
-	endforeach; 
-else :
+	} // end associated loop
+} else {
 	echo '<div class="categoryNoItemsMessage"><p>No individual items in this category.</p></div>';
-endif;
+} // end associated check
 ?>
 </div>
+</div>
+
+<?php 
+// set the contextual menu items
+$this->set('context_menu', array('menus' => array(
+	array(
+		'heading' => 'Categories',
+		'items' => array(
+			$this->Html->link('Add', array('plugin' => 'categories', 'controller' => 'categories', 'action' => 'add', 'type' => 'Category')),
+			$this->Html->link('List', array('plugin' => 'categories', 'controller' => 'categories', 'action' => 'index')),
+			)
+		),
+	))); ?>

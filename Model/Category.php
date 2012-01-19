@@ -83,7 +83,7 @@ class Category extends CategoriesAppModel {
 			),
 		);
 
-	
+
 
 /**
  * hasOne associations
@@ -102,11 +102,11 @@ class Category extends CategoriesAppModel {
 	);
 
 
-	/**
-	 * hasAndBelongsToMany associations
-	 *
-	 * @var array $hasAndBelongsToMany
- 	 *//*
+/**
+ * hasAndBelongsToMany associations
+ *
+ * @var array $hasAndBelongsToMany
+ *//*
 	var $hasAndBelongsToMany = array(
         'CategoryItem' => array(
             'className' => 'Categories.Categorized',
@@ -132,7 +132,7 @@ class Category extends CategoriesAppModel {
         ),
     );  */
 /*
-	public function __construct($id = false, $table = null, $ds = null) {		
+	public function __construct($id = false, $table = null, $ds = null) {
 		#debug($id);
 		#debug($table);
 		#debug($ds);
@@ -146,21 +146,21 @@ class Category extends CategoriesAppModel {
 	    	'unique' => false,);
 		parent::__construct($id, $table, $ds);
 	} */
- 
- 
+
+
 	function beforeFind($queryData) {
 		$this->order = array("{$this->alias}.name", "{$this->alias}.lft");
 		return $queryData;
 	}
-	
-	
-	/**
-	 * Adds a new record to the database to category and CategoryOption.
-	 *
-	 * @param string $userId, user id
-	 * @param array post data, should be Contoller->data
-	 * @return array
-	 */
+
+
+/**
+ * Adds a new record to the database to category and CategoryOption.
+ *
+ * @param string $userId, user id
+ * @param array post data, should be Contoller->data
+ * @return array
+ */
 	public function add($userId = null, $data = null) {
 		if (!empty($data)) {
 			$data['Category']['user_id'] = $userId;
@@ -183,7 +183,7 @@ class Category extends CategoriesAppModel {
 				} else {
 					$data['Category']['category_id'] = $this->CategoryOption->field('CategoryOption.category_id',
 							array('CategoryOption.id' => $data['Category']['parent_id']));
-				}			
+				}
 
 				$result = $this->CategoryOption->save($data['Category']);
 			}
@@ -195,7 +195,7 @@ class Category extends CategoriesAppModel {
 				if (!empty($categoryId)) {
 					$this->delete($categoryId);
 				}
-				throw new Exception(__d('categories', 'Could not save the category, please check your inputs.', true));
+				throw new Exception(__d('categories', 'Could not save the category, please check your inputs.'));
 			}
 			return $return;
 		}
@@ -204,7 +204,7 @@ class Category extends CategoriesAppModel {
 /**
  * Edits an existing Category.
  *
- * @param string $id, category id 
+ * @param string $id, category id
  * @param string $userId, user id
  * @param array $data, controller post data usually $this->request->data
  * @return mixed True on successfully save else post data as array
@@ -237,7 +237,7 @@ class Category extends CategoriesAppModel {
 			return $category;
 		}
 	}
-	
+
 	public function view($slug = null, $params = null) {
 		# if models is empty that means nothing falls in this category
 		$models = $this->Categorized->find('all', array('order'=>'Categorized.model',
@@ -256,10 +256,10 @@ class Category extends CategoriesAppModel {
 				),
 			$params,
 			));
-		
-		if (empty($category)) :
-			throw new Exception(__d('categories', 'Invalid Category', true));
-		else :
+
+		if (empty($category)) {
+			throw new Exception(__d('categories', 'Invalid Category'));
+		} else {
 			$temp = '';
 			$associated = null;
 			foreach($models as $mod) {
@@ -269,21 +269,29 @@ class Category extends CategoriesAppModel {
 				}
 				$associated[$temp][] =  $mod['foreign_key'];
 			}
-			if (!empty($associated)) : foreach($associated as $model => $records) :
-				$res = ClassRegistry::init($model)->find('all',
-						array('conditions'=>array($model.'.id'=>$records)));
-				$category['Associated'][$model] = $res;
-				//$category['Associated'][] = $model;
-			endforeach; endif;
-		endif;
+			if (!empty($associated)) {
+				foreach($associated as $model => $records) {
+					App::uses($model, ZuhaInflector::pluginize($model).'.Model');
+					$Model = new $model;
+					$res = $Model->find('all', array(
+						'conditions' => array(
+							$model.'.id' => $records
+							),
+						));
+					$category['Associated'][$model] = $res;
+					//$category['Associated'][] = $model;
+				} // end associated loop
+			} // end associated !empty check
+		} // end category empty check
 		return $category;
 	}
 
 /**
  * Validates the deletion
  *
- * @param string $id, category id 
+ * @param string $id, category id
  * @param string $userId, user id
+
  * @param array $data, controller post data usually $this->request->data
  * @return boolean True on success
  * @throws Exception If the element does not exists
@@ -293,9 +301,9 @@ class Category extends CategoriesAppModel {
 			'conditions' => array(
 				"{$this->alias}.{$this->primaryKey}" => $id,
 				)));
-		
+
 		if (empty($category)) {
-			throw new Exception(__d('categories', 'Invalid Category', true));
+			throw new Exception(__d('categories', 'Invalid Category'));
 		}
 
 		$this->request->data['category'] = $category;
@@ -316,18 +324,18 @@ class Category extends CategoriesAppModel {
 			throw new Exception(__d('categories', 'You need to confirm to delete this Category', true));
 		}
 	}
-	
-	public function get_types() {
+
+	public function getTypes() {
 		return array(
 			'Category' => 'Category',
 			'Attribute Group' => '--Attribute Group',
 		 	'Attribute Type' => '-- --Attribute Type',
-			'Option Group' => '--Option Group',
-			'Option Type' => '-- --Option Type'
+			//'Option Group' => '--Option Group',
+			//'Option Type' => '-- --Option Type'
 			);
 	}
-	
-	
+
+
 	public function categorized($userId = null, $data = null, $model) {
 		$modelData = null;
 		$ret = false;
@@ -350,4 +358,97 @@ class Category extends CategoriesAppModel {
 		}
 		return $ret;
 	}
+
+	public function recordCount($categoryId) {
+		$count = $this->Categorized->find('count', array('conditions' => array('Categorized.category_id' => $categoryId)));
+		$data['Category']['id'] = $categoryId;
+		$data['Category']['record_count'] = $count;
+		if ($this->save($data)) {
+			return true;
+		} else {
+			throw new Exception(__d('categories', 'Categor record count update failed.'));
+		}
+	}
+
+
+	public function treeCategoryOptions($type = 'threaded', $options) {
+		$options['fields'] = array('id', 'parent_id', 'name');
+		/*$options['contain'] = array(
+			'CategoryOption' => array(
+				'conditions' => array(
+					'CategoryOption.parent_id' => null,
+					),
+				'fields' => array(
+					'name',
+					'category_id',
+					'id',
+					),
+				)
+			);*/
+		$categories = $this->find('threaded', $options);
+
+		$categories = $this->_addCategoryOptionToChildren($categories);
+
+		return $categories;
+	}
+
+
+/**
+ * @todo		Make this truly recursive.  Its hard coded to two levels deep right now.
+ */
+	private function _addCategoryOptionToChildren($categories, $recursed = false) {
+		$i=0;
+		foreach ($categories as $category) {
+			$oldChildren = $category['children'];
+			$n=0;
+			foreach ($oldChildren as $oldChild) {
+				$attributeGroups = $this->CategoryOption->find('all', array(
+					'conditions' => array(
+						'CategoryOption.category_id' => $oldChild['Category']['id'],
+						'CategoryOption.type' => 'Attribute Group',
+						),
+					'contain' => array(
+						'children',
+						),
+					));
+				$attributeGroups = $this->_reformatAttributeGroups($attributeGroups);
+				$categories[$i]['children'][$n] = array_merge($oldChild, array('children' => $attributeGroups));
+				$n++;
+			}
+			unset($attributeGroups);
+			$attributeGroups = $this->CategoryOption->find('all', array(
+				'conditions' => array(
+					'CategoryOption.category_id' => $category['Category']['id'],
+					'CategoryOption.type' => 'Attribute Group',
+					),
+				'contain' => array(
+					'children',
+					),
+				));
+			$attributeGroups = $this->_reformatAttributeGroups($attributeGroups);
+			foreach ($attributeGroups as $attributeGroup) {
+				array_push($categories[$i]['children'], $attributeGroup);
+			}
+			$i++;
+		}
+
+		return $categories;
+	}
+
+
+	private function _reformatAttributeGroups($attributeGroups) {
+		$a=0;
+		foreach ($attributeGroups as $attributeGroup) {
+			$b=0;
+			foreach ($attributeGroup['children'] as $type) {
+				unset($attributeGroups[$a]['children'][$b]);
+				$attributeGroups[$a]['children'][$b]['CategoryOption'] = $type;
+				$b++;
+			}
+			$a++;
+		}
+		return $attributeGroups;
+	}
+
+
 }

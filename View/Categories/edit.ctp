@@ -13,11 +13,22 @@
 	<fieldset>
  		<legend><?php echo __d('categories', 'Edit Category');?></legend>
 	<?php
-		echo $this->Form->input('id');
-		echo $this->Form->input('parent_id', array('empty' => true));
-		echo $this->Form->input('name', array('after' => $this->Html->link(' Edit Category Images', array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'edit', 'Category', $this->request->data['Category']['id'], 'admin' => false))));
-		echo $this->Form->input('model');
-		echo $this->Form->input('description', array('type' => 'richtext'));
+		echo $this->Form->input('Category.id');
+		echo $this->Form->input('Category.parent_id', array('empty' => true));
+		echo $this->Form->input('Category.name', array('after' => $this->Html->link(' Edit Category Images', array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'edit', 'Category', $this->request->data['Category']['id'], 'admin' => false))));
+		echo $this->Form->input('Category.model');
+		echo $this->Form->input('Category.description', array('type' => 'richtext'));
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__d('categories', 'Submit', true));?>
+
+<?php 
+// set the contextual menu items
+$this->set('context_menu', array('menus' => array(
+	array(
+		'heading' => 'Categories',
+		'items' => array(
+			$this->Html->link('List', array('plugin' => 'categories', 'controller' => 'categories', 'action' => 'tree', 'model' => $this->Form->value('Category.model'))),
+			)
+		),
+	))); ?>

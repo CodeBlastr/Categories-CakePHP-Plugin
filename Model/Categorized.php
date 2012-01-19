@@ -83,5 +83,19 @@ class Categorized extends CategoriesAppModel {
 				)*/
 			);
 	}
+	
+	public function afterSave($created) {
+		if (!empty($this->data['Categorized']['category_id'])) {
+			# update the category record count
+			try {
+				$this->Category->recordCount($this->data['Categorized']['category_id']);
+			} catch (Exception $e) {
+				# for now continue, because I don't know what to do.
+				# we don't need to stop, but there should be some thing. 
+				# not sure what? 
+			}
+		}
+		return true;
+	}
 
 }

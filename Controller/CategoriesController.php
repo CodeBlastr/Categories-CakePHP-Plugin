@@ -22,8 +22,10 @@ App::import('Model', 'Categories.Category');
  * @subpackage categories.controllers
  */
 class CategoriesController extends CategoriesAppController {
+	
 	public $allowedActions = array('requestForItems');
 	public $uses = 'Categories.Category';
+	public $paginate = array();
 
 /**
  * Name
@@ -44,7 +46,7 @@ class CategoriesController extends CategoriesAppController {
  *
  * @return void
  */
-	function beforeFilter() {
+	public function beforeFilter() {
 		parent::beforeFilter();
 		$this->Auth->allow('view', 'index');
 		//debug($this->modelClass);
@@ -52,40 +54,26 @@ class CategoriesController extends CategoriesAppController {
 	}
 
 /**
- * Admin index for category.
+ * Index method.
  * 
  */
-	function index() {
+	public function index() {
 		$this->Category->recursive = 0;
 		$this->set('categories', $this->paginate()); 
 	}
 
 /**
- * Admin index
- *
- */
-	function tree() {
-		#$this->Category->recursive = 0;
-		$this->helpers[] = 'Utils.Tree';
-		$params['order'] = array('Category.name', 'Category.lft');
-		$params['conditions'] = !empty($this->request->params['named']['model']) ? array('Category.model' => $this->request->params['named']['model']) : null;
-		$categories = $this->Category->find('threaded', $params);
-		#$categoryOptions = $this->Category->CategoryOption->find('threaded', array('order' => 'CategoryOption.lft'));
-		$this->set(compact('categories'));
-		#$this->set(compact('categoryOptions'));
-	}
-
-/**
- * Admin view for category.
+ * View for category.
  *
  * @param string $slug, category slug 
  */
-	function view($slug = null) {
+	public function view($slug = null) {
 		try {
 			# this is put here specifically for the CatalogItems category, so if you change it
 			# make sure that /categories/categories/view/X  (where X = a catalog item related category) looks good still.
 			$category = $this->Category->view($slug);  // equals the category, and contains related items grouped by model
-			$this->paginate = array('conditions' => array('ChildCategory.parent_id' => $category['Category']['id']), 'fields' => array('id', 'name'));
+			$this->paginate['conditions'] = array('ChildCategory.parent_id' => $category['Category']['id']); 
+			$this->paginate['fields'] = array('id', 'name');
 			$childCategories = $this->paginate('ChildCategory');
 		} catch (Exception $e) {
 			$this->Session->setFlash($e->getMessage());
@@ -96,30 +84,33 @@ class CategoriesController extends CategoriesAppController {
 	
 
 /**
- * Admin add for category.
+ * Add for category.
  * 
- * @todo 		Make two named parameters work.  categorize:{model to categorize}, parent:{parent category}.  These will prefill the the drop downs.  If only parent then we'll have to look up the model of that parent to set it.
  */
-	function add($categoryId = null) {
+	public function add($categoryId = null) {
 		if (!empty($this->request->params['named']['parent']) && empty($this->request->params['named']['model'])) :
-			$parent = $this->Category->find('first', array('conditions' => array('Category.id' => $this->request->params['named']['parent']))); 
+			$parent = $this->Category->find('first', array(
+				'conditions' => array(
+					'Category.id' => $this->request->params['named']['parent']
+					)
+				)); 
 			if (!empty($parent['Category']['model'])) : 
 				$this->redirect(array('action' => 'add', 'model' => $parent['Category']['model'], 'parent' => $parent['Category']['id']));
 			endif;
 		endif;
 		
-		if(!empty($this->request->data)) :
+		if(!empty($this->request->data)) {
 			try {
 				$result = $this->Category->add($this->Auth->user('id'), $this->request->data);
 				if ($result === true) {
-					if (!empty($this->request->data['Category']['parent_id']) && empty($this->request->data['Category']['type'])) : 
+					if (!empty($this->request->data['Category']['parent_id']) && empty($this->request->data['Category']['type'])) {
 						# if there was a parent_id then we can assign categories to items
 						$this->Session->setFlash(__d('categories', 'Category Saved.  You can assign categories here.', true));
 						$this->redirect(array('action' => 'categorized', 'type' => $this->request->data['Category']['model']));
-					else :
+					} else {
 						$this->Session->setFlash(__d('categories', 'Category Saved', true));
 						$this->redirect(array('action' => 'tree', 'model' => $this->request->data['Category']['model']));
-					endif;
+					} 
 				}
 			} catch (Exception $e) {
 				$this->request->data['Category']['model'] = !empty($this->request->data['Category']['model']) ? $this->request->data['Category']['model'] : null;
@@ -128,62 +119,117 @@ class CategoriesController extends CategoriesAppController {
 				$this->Session->setFlash($e->getMessage());
 				$this->redirect(array('action' => 'index'));
 			}
-		endif;
+		} // end data check
 		
 		if (!empty($this->request->data) && !empty($categoryId)) {
 			$this->request->data['Category']['category_id'] = $categoryId;
 		}
 		
-		$this->request->data['Category']['model'] = !empty($this->request->params['named']['model']) ? $this->request->params['named']['model'] : null;
+		#_viewVars
 		$models = $this->Category->listModels();
-		$parents = $this->Category->generateTreeList();
-		$this->request->data['Category']['parent_id'] = !empty($this->request->params['named']['parent']) ? $this->request->params['named']['parent'] : null;
-		#$users = $this->Category->User->find('list');
-		$types = $this->Category->get_types();
-		$this->set(compact('models', 'parents', 'types'));
+		$parents = $this->Category->generateTreeList();		
+		$parentId = !empty($this->request->params['named']['parent']) ? $this->request->params['named']['parent'] : null;
+		
+		if (!empty($this->request->params['named']['type']) && $this->request->params['named']['type'] == 'Attribute Type') {
+			$options = $this->Category->CategoryOption->find('threaded');
+			$parentOptions = Set::combine($options, '{n}.CategoryOption.id', '{n}.CategoryOption.name');
+			if (!empty($parentOptions) && !empty($parentOptions[$parentId])) {
+				$parentOption = $parentOptions[$parentId];
+			}
+			if (!empty($parentOption)) {
+				$parentCategories = Set::combine($options, '{n}.CategoryOption.name', '{n}.CategoryOption.category_id');
+				if (!empty($parentCategories[$parentOption])) {
+					$optionParentId = $parentCategories[$parentOption];
+				}
+			}
+		}
+		
+		$parent = !empty($optionParentId) && !empty($parents[$optionParentId]) ? $parents[$optionParentId] : ''; // Shirts
+		$parent = !empty($parents[$parentId]) ? $parents[$parentId] : $parent; // Shirts
+		$parent = !empty($parentOption) ? Inflector::singularize($parent) . ' ' . $parentOption : $parent; // Shirt Sizes
+		// shirt sizes
+		$type = !empty($this->request->params['named']['type']) ? $this->request->params['named']['type'] : 'Category';
+		$model = !empty($this->request->params['named']['model']) ? $this->request->params['named']['model'] : '';
+		$types = $this->Category->getTypes();
+		$pageTitleForLayout = !empty($parent) ? __('Add %s %s to %s', $model, $type, $parent) : __('Add %s %s', $model, $type);
+		
+		$this->request->data['Category']['model'] = $model;
+		$this->request->data['Category']['type'] = $type;
+		$this->request->data['Category']['parent_id'] = $parentId;
+		$this->set('page_title_for_layout', $pageTitleForLayout);
+		$this->set(compact('models', 'parents', 'types', 'model', 'parent', 'type', 'parentId'));
 	}
 
-	/**
-	 * Admin edit for category.
-	 *
-	 * @param string $id, category id 
-	 */
-	function edit($id = null) {
-		try {
-			$result = $this->Category->edit($id, null, $this->request->data);
-			if ($result === true) {
-				$this->Session->setFlash(__d('categories', 'Category saved', true));
-				$this->redirect(array('action' => 'tree'));
-				
-			} else {
-				$this->request->data = $result;
-			}
-		} catch (Exception $e) {
-			$this->Session->setFlash($e->getMessage());
-			$this->redirect('/');
+/**
+ * Edit for category.
+ *
+ * @param string $id, category id 
+ */
+	public function edit($id = null) {
+		$this->Category->id = $id;
+		if (!$this->Category->exists()) {
+			throw new NotFoundException(__('Invalid order coupon'));
 		}
-		$parents = $this->Category->generateTreeList();
-		$options = $this->Category->CategoryOption->find('all', array('conditions' => array('CategoryOption.category_id' => $id, 'CategoryOption.type' => 'Attribute Group')));
-		#$users = $this->Category->User->find('list');
-		$this->set(compact('parents', 'options'));
+		if ($this->request->is('post') || $this->request->is('put')) {
+			try {
+				$result = $this->Category->edit($id, null, $this->request->data);
+				if ($result === true) {
+					$this->Session->setFlash(__d('categories', 'Category saved', true));
+					$this->redirect(array('action' => 'tree'));
+					
+				} else {
+					$this->request->data = $result;
+				}
+			} catch (Exception $e) {
+				$this->Session->setFlash($e->getMessage());
+				$this->redirect('/');
+			}
+		} else {
+			$this->request->data = $this->Category->read(null, $id);
+			$parents = $this->Category->generateTreeList();
+			$options = $this->Category->CategoryOption->find('all', array(
+				'conditions' => array(
+					'CategoryOption.category_id' => $id, 
+					'CategoryOption.type' => 'Attribute Group'
+					)
+				));
+			$this->set(compact('parents', 'options'));
+		}
  
 	}
 
 /**
- * Admin delete for category.
+ * Delete for category.
  *
  * @param string $id, category id 
  */
-	function delete($id = null) {
+	public function delete($id = null) {
 		$this->__delete('Category', $id);
 	} 
+
+/**
+ * Tree method
+ *
+ * @param void
+ * @return void
+ */
+	public function tree() {
+		$this->helpers[] = 'Utils.Tree';
+		$model = !empty($this->request->params['named']['model']) ? $this->request->params['named']['model'] : null;
+		if (!empty($model)) {
+			$params['conditions']['Category.model'] = $model;
+		}
+		$categories = $this->Category->treeCategoryOptions('threaded', $params);
+		$this->set(compact('categories', 'model'));		
+	}
+
 	
 
 /**
  * This function sets the variables when picking a category for a model/foreign_key combo
  *
  */
-	function choose_category($categoryId = null) {
+	public function choose_category($categoryId = null) {
 		App::Import('Model', 'Catalogs.Catalog');
 		$catalog = new Catalog();
 		if (!empty($this->request->params['named']['catalog'])) {
@@ -196,33 +242,14 @@ class CategoriesController extends CategoriesAppController {
 			$this->set('catalogs', $catalog->Catalog->find('list'));
 		}
 	}
-
-
-
+	
+	
 /**
- * This function sets the variables when picking a category for a model/foreign_key combo
- *
- * @todo 		Make it so that we could also use the $categoryId to set where the choosing starts.
+ * get_children()
+ * Get children of parentId if parent id is category id else if catalog id find direct children
+ * todo: if used further move this logic to model
  */
-	function admin_choose_category($categoryId = null) {
-		if (!empty($this->request->params['named']['catalog'])) {
-			$this->set('catalogIdUrl', $this->request->params['named']['catalog']);
-		}
-		else if (!empty($this->request->data)) {
-			$catalog_id = $this->request->data['CatalogItem']['catalog_id'];
-			$this->set('catalogs', $this->Category->Catalog->find('list', array('conditions'=>array('Catalog.id'=>$catalog_id))));
-		} else {
-			$this->set('catalogs', $this->Category->Catalog->find('list'));
-		}
-	}
-	
-	
-	/**
-	 * get_children()
-	 * Get children of parentId if parent id is category id else if catalog id find direct children
-	 * todo: if used further move this logic to model
-	 */
-	function get_children() {
+	public function get_children() {
 		$parent = null;
 		$parentId = null;
 		if (isset($this->request->params['named']['parentId']))
@@ -255,31 +282,37 @@ class CategoriesController extends CategoriesAppController {
 			echo json_encode($directChildren);
 	}
 	
-	/*
-	 * get_all()
-	 * Get all of the options based on type
-	 */
-	function get_all($type, $model = null) {
+/*
+ * get_all()
+ * Get all of the options based on type
+ */
+	public function get_all($type, $model = null) {
 		$this->layout = false;
 		$conditions = !empty($model) ? array('Category.model' => $model) : array('Category.model' => null);
+				
 		if ($type == 'Category' || $type == 'Attribute Group' || $type == 'Option Group') {
 			$data = $this->Category->generateTreeList($conditions);
-		} else if ($model = 'Catalog') {
+		} else if ($model == 'Catalog') {
 			$parent_type = explode(' ', $type);
-			$data = $this->Category->CategoryOption->generateTreeList(array(
+			$data = $this->Category->CategoryOption->find('all', array(
+				'conditions' => array(
 					'CategoryOption.type' => $parent_type[0]. ' Group',
+					),
+				'contain' => array(
+					'Category',
+					),
 				)) ;
-						
+			$data = Set::combine($data, '{n}.CategoryOption.id', array('{0} {1}', '{n}.Category.name', '{n}.CategoryOption.name'));		
 		}
 		echo json_encode($data);
 	}
 	
-	/**
-	 * admin_categorized()
-	 * Assigns categories to the model passed in Named Parameter
-	 *
-	 */
-	function categorized() {
+/**
+ * categorized()
+ * Assigns categories to the model passed in Named Parameter
+ *
+ */
+	public function categorized() {
 		if (!empty($this->request->data)) {
 			try {
 				$result = $this->Category->categorized($this->Auth->user('id'),
@@ -311,15 +344,15 @@ class CategoriesController extends CategoriesAppController {
 	}
 	
 	
-	/**
-	 * Find category items and return them for a requestAction call.
-	 * 
-	 * @param {int}		The id of the category
-	 * @param {int}		The number of records to return per page
-	 * @param {string}	The model name we're looking for.
-	 * @todo			We had a problem (explained below) with pulling recursive data. It should be fixed.
-	 */
-	function requestForItems($id = null, $limit = 20, $model = null) {
+/**
+ * Find category items and return them for a requestAction call.
+ * 
+ * @param {int}		The id of the category
+ * @param {int}		The number of records to return per page
+ * @param {string}	The model name we're looking for.
+ * @todo			We had a problem (explained below) with pulling recursive data. It should be fixed.
+ */
+	public function requestForItems($id = null, $limit = 20, $model = null) {
 		if (!$this->RequestHandler->isAjax() && !$this->_isRequestedAction()) {
 			return $this->cakeError('404');
 		}
@@ -361,7 +394,7 @@ class CategoriesController extends CategoriesAppController {
 	
 	
 	
-	function _isRequestedAction() {
+	private function _isRequestedAction() {
 		return array_key_exists('requested', $this->request->params);
 	}
 }

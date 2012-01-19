@@ -26,7 +26,7 @@ if (isset($modelSettings) && $modelSettings[$modelName]['display'] === '0') {
 # setup view vars for reuse 
 $modelClass = $modelName; #ex. ContactPerson
 $prefix = null;
-$plugin = pluginize($modelName);
+$plugin = ZuhaInflector::pluginize($modelName);
 $controller = Inflector::tableize($modelName); #contact_people
 $indexVar = 'categoryItems'; #contactPeople
 $humanModel = Inflector::humanize(Inflector::underscore($modelClass)); #Contact Person
@@ -116,7 +116,7 @@ echo "\n";
 $i = 0;
 foreach ($categoryItems as $categoryItem):
 	$modelName = key($categoryItem);
-	$plugin = strtolower(pluginize($modelName));
+	$plugin = strtolower(ZuhaInflector::pluginize($modelName));
 	$controller = Inflector::tableize($modelName);
 	$description = !empty($categoryItem[$modelName]['summary']) ? $categoryItem[$modelName]['summary'] : $categoryItem[$modelName]['summary']; // temporary until a better way to handle description field naming is devised
 	$class = null;
