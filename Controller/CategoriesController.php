@@ -315,8 +315,7 @@ class CategoriesController extends CategoriesAppController {
 	public function categorized() {
 		if (!empty($this->request->data)) {
 			try {
-				$result = $this->Category->categorized($this->Auth->user('id'),
-					$this->request->data, $this->request->data['Model']['type']);
+				$result = $this->Category->categorized($this->request->data, $this->request->data['Model']['type']);
 				if ($result) {
 					$this->Session->setFlash(__d('categories', 'Category assigned', true));
 					$this->redirect( $this->request->data['Model']['Referer']);
