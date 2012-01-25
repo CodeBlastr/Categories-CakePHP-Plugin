@@ -49,10 +49,6 @@ class Category extends CategoriesAppModel {
 			'fields' => '',
 			'order' => ''
 			),
-		/* This is causing problems with nesting, and I don't believe its used so temporary pulled it out to see if it causes any problems.   Remove completely if nothing pops up.  10/4/2011 - RK
-		'User' => array('className' => 'Users.User',
-			'foreignKey' => 'user_id',
-			),*/
 		);
 
 	/**
@@ -157,13 +153,11 @@ class Category extends CategoriesAppModel {
 /**
  * Adds a new record to the database to category and CategoryOption.
  *
- * @param string $userId, user id
  * @param array post data, should be Contoller->data
  * @return array
  */
-	public function add($userId = null, $data = null) {
+	public function add($data = null) {
 		if (!empty($data)) {
-			$data['Category']['user_id'] = $userId;
 			if ($data['Category']['type'] == 'Category') {
 				$this->create();
 				if($result = $this->save($data)) {
@@ -212,11 +206,9 @@ class Category extends CategoriesAppModel {
  */
 	public function edit($id = null, $userId = null, $data = null) {
 		$conditions = array("{$this->alias}.{$this->primaryKey}" => $id);
-		if (!empty($userId)) {
-			$conditions["{$this->alias}.user_id"] = $userId;
-		}
+		
 		$category = $this->find('first', array(
-			'contain' => array('User', 'ParentCategory'),
+			'contain' => array('ParentCategory'),
 			'conditions' => $conditions));
 
 		if (empty($category)) {
@@ -240,7 +232,8 @@ class Category extends CategoriesAppModel {
 
 	public function view($slug = null, $params = null) {
 		# if models is empty that means nothing falls in this category
-		$models = $this->Categorized->find('all', array('order'=>'Categorized.model',
+		$models = $this->Categorized->find('all', array(
+			'order' => 'Categorized.model',
 			'conditions' => array(
 				'Categorized.category_id' => $slug),
 		));
@@ -290,8 +283,6 @@ class Category extends CategoriesAppModel {
  * Validates the deletion
  *
  * @param string $id, category id
- * @param string $userId, user id
-
  * @param array $data, controller post data usually $this->request->data
  * @return boolean True on success
  * @throws Exception If the element does not exists
@@ -336,7 +327,7 @@ class Category extends CategoriesAppModel {
 	}
 
 
-	public function categorized($userId = null, $data = null, $model) {
+	public function categorized($data = null, $model) {
 		$modelData = null;
 		$ret = false;
 		foreach($data[$model]['id'] as $id) {
