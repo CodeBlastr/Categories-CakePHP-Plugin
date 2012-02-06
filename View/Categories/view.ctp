@@ -24,7 +24,13 @@ if (!empty($childCategories)) :  ?>
 		'controller' => 'categories',
 		'displayName' => 'name',
 		'displayDescription' => '',
-		'actions' => array(),
+		'showGallery' => true,
+		'galleryModel' =>  array(
+			'name' => 'Category',
+			'alias' => 'ChildCategory',
+			),
+		'galleryForeignKey' => 'id',
+		'actions' => false,
 		));?>
 </div><?php
 endif;
