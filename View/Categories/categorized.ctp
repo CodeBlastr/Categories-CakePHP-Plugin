@@ -39,5 +39,4 @@ $this->set('context_menu', array('menus' => array(
 			$this->Html->link(__d('categories', 'Category Tree', true), array('action' => 'tree')),
 			)
 		),
-	)));
-?>
+	))); ?>
