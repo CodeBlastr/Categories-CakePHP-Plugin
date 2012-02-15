@@ -37,45 +37,39 @@ class Category extends CategoriesAppModel {
 		/*'Utils.Sluggable' => array(
 			'label' => 'name')*/);
 
-	/**
-	 * belongsTo associations
-	 *
-	 * @var array $belongsTo
-	 */
+/**
+ * belongsTo associations
+ *
+ * @var array $belongsTo
+ */
 	public $belongsTo = array(
 		'ParentCategory' => array('className' => 'Categories.Category',
-			'foreignKey' => 'id',
+			'foreignKey' => 'parent_id',
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
 			),
 		);
 
-	/**
-	 * hasMany associations
-	 *
-	 * @var array $hasMany
-	 */
+/**
+ * hasMany associations
+ *
+ * @var array $hasMany
+ */
 	public $hasMany = array(
 		'ChildCategory' => array(
 			'className' => 'Categories.Category',
 			'foreignKey' => 'id',
-			'dependent' => true,
 			),
 		'CategoryOption' => array(
 			'className' => 'Categories.CategoryOption',
 			'foreignKey' => 'category_id',
-			'dependent' => true
+			'dependent' => true,
 			),
 		'Categorized' => array(
 			'className' => 'Categories.Categorized',
 			'foreignKey' => 'category_id',
-			'dependent' => true
-			),
-		'Gallery' => array(
-			'className' => 'Galleries.Gallery',
-			'foreignKey' => 'foreign_key',
-			'dependent' => true,
+			'dependent' => false,
 			),
 		);
 
@@ -90,7 +84,7 @@ class Category extends CategoriesAppModel {
 		'Gallery' => array(
 			'className' => 'Galleries.Gallery',
 			'foreignKey' => 'foreign_key',
-			'dependent' => true,
+			'dependent' => false,
 			'conditions' => array('Gallery.model' => 'Category'),
 			'fields' => '',
 			'order' => ''
@@ -204,7 +198,7 @@ class Category extends CategoriesAppModel {
  * @return mixed True on successfully save else post data as array
  * @throws Exception If the element does not exists
  */
-	public function edit($id = null, $userId = null, $data = null) {
+	public function edit($id = null, $data = null) {
 		$conditions = array("{$this->alias}.{$this->primaryKey}" => $id);
 		
 		$category = $this->find('first', array(
@@ -220,7 +214,7 @@ class Category extends CategoriesAppModel {
 			$this->set($data);
 			$result = $this->save(null, true);
 			if ($result) {
-				$this->request->data = $result;
+				$this->data = $result;
 				return true;
 			} else {
 				return $data;
