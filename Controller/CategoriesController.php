@@ -101,7 +101,7 @@ class CategoriesController extends CategoriesAppController {
 		
 		if(!empty($this->request->data)) {
 			try {
-				$result = $this->Category->add($this->Auth->user('id'), $this->request->data);
+				$result = $this->Category->add($this->request->data);
 				if ($result === true) {
 					if (!empty($this->request->data['Category']['parent_id']) && empty($this->request->data['Category']['type'])) {
 						# if there was a parent_id then we can assign categories to items
@@ -172,7 +172,7 @@ class CategoriesController extends CategoriesAppController {
 		}
 		if ($this->request->is('post') || $this->request->is('put')) {
 			try {
-				$result = $this->Category->edit($id, null, $this->request->data);
+				$result = $this->Category->edit($id, $this->request->data);
 				if ($result === true) {
 					$this->Session->setFlash(__d('categories', 'Category saved', true));
 					$this->redirect(array('action' => 'tree'));
@@ -218,6 +218,8 @@ class CategoriesController extends CategoriesAppController {
 		$model = !empty($this->request->params['named']['model']) ? $this->request->params['named']['model'] : null;
 		if (!empty($model)) {
 			$params['conditions']['Category.model'] = $model;
+		} else {
+			$params = null;
 		}
 		$categories = $this->Category->treeCategoryOptions('threaded', $params);
 		$this->set(compact('categories', 'model'));		
