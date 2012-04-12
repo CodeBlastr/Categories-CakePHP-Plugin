@@ -12,14 +12,14 @@
 	$this->Html->css(
 		array(
 			'/categories/css/jquery.treeview',
-			), 
-		null, 
+			),
+		null,
 		array('inline' => false)); ?>
   <div id="categoryMenu"> <?php echo $this->Tree->generate($categoryOptions, array('element' => 'category_options/tree_item', 'class' => 'categorytree', 'id' => 'categorytree')); ?>
   </div>
 </div>
 
-<?php 
+<?php
 // set the contextual menu items
 $this->set('context_menu', array('menus' => array(
 	array(
@@ -31,7 +31,7 @@ $this->set('context_menu', array('menus' => array(
 	)));
 ?>
 
-<script type="text/javascript"> 
+<script type="text/javascript">
 	$(function() {
 		$('#categorytree').treeview();
 	})
@@ -62,7 +62,7 @@ $this->set('context_menu', array('menus' => array(
  *
  * @copyright Copyright 2010, Cake Development Corporation (http://cakedc.com)
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
- 
+
 
 <table cellpadding="0" cellspacing="0">
 <tr>
@@ -106,7 +106,7 @@ foreach ($categories as $category):
 <?php echo $this->Element('paging');?>
 
 
-<?php 
+<?php
 // set the contextual menu items
 $this->set('context_menu', array('menus' => array(
 	array(
