@@ -363,7 +363,7 @@ class CategoriesController extends CategoriesAppController {
 				'hasAndBelongsToMany' => array(
 					'CategoryItem'  => array(
 						'className' => $model, 
-       				'joinTable' => 'categorizeds',
+       				'joinTable' => 'categorized',
 	    				'associationForeignKey' => 'foreign_key',
 	            		'foreignKey' => 'id',
 						))));

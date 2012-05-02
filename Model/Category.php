@@ -100,7 +100,7 @@ class Category extends CategoriesAppModel {
 	var $hasAndBelongsToMany = array(
         'CategoryItem' => array(
             'className' => 'Categories.Categorized',
-       		'joinTable' => 'categorizeds',
+       		'joinTable' => 'categorized',
     		'associationForeignKey' => 'foreign_key',
             'foreignKey' => 'category_id',
     		'conditions' => array('Categorized.model' => 'CatalogItem'),
@@ -128,8 +128,8 @@ class Category extends CategoriesAppModel {
 		#debug($ds);
 		$this->hasAndBelongsToMany['CategoryItem'] = array(
 	    	'className' => 'Catalogs.CatalogItem',
-	       	'joinTable' => 'categorizeds',
-	       	'with' => 'categorizeds',
+	       	'joinTable' => 'categorized',
+	       	'with' => 'categorized',
 	    	'associationForeignKey' => 'foreign_key',
 	        'foreignKey' => 'model',
 	    	'conditions' => array('Categorized.model' => 'CatalogItem', 'Categorized.category_id' => 5),

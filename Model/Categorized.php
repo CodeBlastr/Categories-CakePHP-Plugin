@@ -29,8 +29,13 @@ class Categorized extends CategoriesAppModel {
  *
  * @var string
  */
-	public $useTable = 'categorizeds';
+	public $useTable = 'categorized';
 
+/** 
+ * Belongs To
+ * 
+ * @var array
+ */
 	public $belongsTo = array(
 		'Category' => array(
 			'className' => 'Categories.Category',
@@ -50,38 +55,6 @@ class Categorized extends CategoriesAppModel {
  */
 	public function __construct($id = false, $table = null, $ds = null) {
 		parent::__construct($id, $table, $ds);
-		$this->validate = array(
-			/*'foreign_key' => array(
-				'required' => array(
-					'rule' => array(
-						'notEmpty'
-						),
-					'required' => true,
-					'allowEmpty' => false,
-					'message' => __d('categories', 'Foreign key can not be empty', true)
-					)
-				),
-			'category_id' => array(
-				'required' => array(
-					'rule' => array(
-						'notEmpty'
-						),
-					'required' => true,
-					'allowEmpty' => false,
-					'message' => __d('categories', 'Category id can not be empty', true)
-					)
-				),
-			'model' => array(
-				'required' => array(
-					'rule' => array(
-						'notEmpty'
-						),
-					'required' => true,
-					'allowEmpty' => false,
-					'message' => __d('categories', 'Model field can not be empty', true)
-					)
-				)*/
-			);
 	}
 	
 	public function afterSave($created) {
