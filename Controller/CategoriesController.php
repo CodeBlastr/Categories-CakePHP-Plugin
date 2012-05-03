@@ -224,26 +224,6 @@ class CategoriesController extends CategoriesAppController {
 		$categories = $this->Category->treeCategoryOptions('threaded', $params);
 		$this->set(compact('categories', 'model'));		
 	}
-
-	
-
-/**
- * This function sets the variables when picking a category for a model/foreign_key combo
- *
- */
-	public function choose_category($categoryId = null) {
-		App::Import('Model', 'Catalogs.Catalog');
-		$catalog = new Catalog();
-		if (!empty($this->request->params['named']['catalog'])) {
-			$this->set('catalogIdUrl', $this->request->params['named']['catalog']);
-		}
-		else if (!empty($this->request->data)) {
-			$catalog_id = $this->request->data['CatalogItem']['catalog_id'];
-			$this->set('catalogs', $catalog->find('list', array('conditions'=>array('Catalog.id'=>$catalog_id))));
-		} else {
-			$this->set('catalogs', $catalog->Catalog->find('list'));
-		}
-	}
 	
 	
 /**

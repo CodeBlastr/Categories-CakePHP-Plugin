@@ -67,7 +67,6 @@ $this->set('context_menu', array('menus' => array(
 <table cellpadding="0" cellspacing="0">
 <tr>
 	<th><?php echo $this->Paginator->sort('parent_id');?></th>
-	<!--th><?php echo $this->Paginator->sort('user_id');?></th-->
 	<th><?php echo $this->Paginator->sort('name');?></th>
 	<th><?php echo $this->Paginator->sort('description');?></th>
 	<th class="actions"><?php echo __d('categories', 'Actions');?></th>

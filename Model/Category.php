@@ -106,13 +106,6 @@ class Category extends CategoriesAppModel {
     		'conditions' => array('Categorized.model' => 'CatalogItem'),
     		'unique' => false,
         ),
-        'Catalog' => array(
-            'className' => 'Catalogs.Catalog',
-       		'joinTable' => 'catalogs_categories',
-    		'associationForeignKey' => 'catalog_id',
-            'foreignKey' => 'category_id',
-    		'unique' => false,
-        ),
         'CatalogItem' => array(
             'className' => 'Catalogs.CatalogItem',
        		'joinTable' => 'catalog_items_categories',
