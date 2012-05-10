@@ -24,7 +24,7 @@ class CategoryOption extends CategoriesAppModel {
  * @var string
  */
 	public $name = 'CategoryOption';
-	
+
 /**
  * ActsAs
  *
@@ -69,18 +69,18 @@ class CategoryOption extends CategoriesAppModel {
 			'finderQuery' => 'SELECT * FROM `category_options` AS `children` WHERE `children`.`parent_id` = ({$__cakeID__$})',
 			),
 		);
-	
+
 	public function __construct($id = false, $table = null, $ds = null) {
     	parent::__construct($id, $table, $ds);
  		$this->order = $this->alias . '.category_id';
     }
-	
+
 /**
  * categorized option
  *
  * @todo Add some comments to this.
  */
-	public function categorized_option($userId = null, $data = null, $model) {
+	public function categorized_option($data = null, $model) { // there was $userId here as 3rd parameter, but it's not used below..
 		$ret = false;
 		$catOpt = array();
 		$records = array();
@@ -88,7 +88,7 @@ class CategoryOption extends CategoriesAppModel {
 			if(isset($val) && !empty($val)) {
 				if (is_array($val)) {
 					$catOpt = array_merge($catOpt, $val);
-				} else { 
+				} else {
 					$catOpt[] =  $val;
 				}
 			}
@@ -109,6 +109,7 @@ class CategoryOption extends CategoriesAppModel {
 					'category_option_id' => $cat_opt_id,);
 			}
 		}
+        #debug($records);die();
 		if ($this->CategorizedOption->saveAll($records)) {
 			$ret = true;
 		}
