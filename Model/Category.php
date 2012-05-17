@@ -9,6 +9,7 @@
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+App::uses('CategoriesAppModel', 'Categories.Model');
 /**
  * Category model
  *
@@ -23,6 +24,7 @@ class Category extends CategoriesAppModel {
  * @var string $name
  */
 	public $name = 'Category';
+	
 	public $validate = array(
 		'model' => array('notempty'),
 		);
@@ -50,6 +52,14 @@ class Category extends CategoriesAppModel {
 			'order' => ''
 			),
 		);
+	
+	/* CakeDC Version
+	public $belongsTo = array(
+		'ParentCategory' => array('className' => 'Categories.Category',
+			'foreignKey' => 'category_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''));*/ 
 
 /**
  * hasMany associations
@@ -80,7 +90,7 @@ class Category extends CategoriesAppModel {
  *
  * @var array $hasOne
  */
-	var $hasOne = array(
+	public $hasOne = array(
 		'Gallery' => array(
 			'className' => 'Galleries.Gallery',
 			'foreignKey' => 'foreign_key',
@@ -168,6 +178,7 @@ class Category extends CategoriesAppModel {
 
 				$result = $this->CategoryOption->save($data['Category']);
 			}
+
 			if ($result !== false) {
 				$this->data = array_merge($data, $result);
 				return true;
@@ -216,6 +227,7 @@ class Category extends CategoriesAppModel {
 			return $category;
 		}
 	}
+
 
 	public function view($slug = null, $params = null) {
 		# if models is empty that means nothing falls in this category
@@ -414,7 +426,7 @@ class Category extends CategoriesAppModel {
 	}
 
 
-	private function _reformatAttributeGroups($attributeGroups) {
+	protected function _reformatAttributeGroups($attributeGroups) {
 		$a=0;
 		foreach ($attributeGroups as $attributeGroup) {
 			$b=0;
@@ -427,6 +439,5 @@ class Category extends CategoriesAppModel {
 		}
 		return $attributeGroups;
 	}
-
 
 }

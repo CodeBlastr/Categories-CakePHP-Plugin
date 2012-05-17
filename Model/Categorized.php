@@ -55,17 +55,26 @@ class Categorized extends CategoriesAppModel {
  */
 	public function __construct($id = false, $table = null, $ds = null) {
 		parent::__construct($id, $table, $ds);
+		
+		$this->validate = array(
+			'foreign_key' => array(
+				'required' => array('rule' => array('notEmpty'), 'required' => true, 'allowEmpty' => false, 'message' => __d('categories', 'Foreign key can not be empty'))),
+			'category_id' => array(
+				'required' => array('rule' => array('notEmpty'), 'required' => true, 'allowEmpty' => false, 'message' => __d('categories', 'Category id can not be empty'))),
+			'model' => array(
+				'required' => array('rule' => array('notEmpty'), 'required' => true, 'allowEmpty' => false, 'message' => __d('categories', 'Model field can not be empty'))));
 	}
+	
 	
 	public function afterSave($created) {
 		if (!empty($this->data['Categorized']['category_id'])) {
-			# update the category record count
+			// update the category record count
 			try {
 				$this->Category->recordCount($this->data['Categorized']['category_id']);
 			} catch (Exception $e) {
-				# for now continue, because I don't know what to do.
-				# we don't need to stop, but there should be some thing. 
-				# not sure what? 
+				// for now continue, because I don't know what to do.
+				// we don't need to stop, but there should be some thing. 
+				// not sure what? 
 			}
 		}
 		return true;
