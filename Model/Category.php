@@ -24,7 +24,7 @@ class Category extends CategoriesAppModel {
  * @var string $name
  */
 	public $name = 'Category';
-	
+
 	public $validate = array(
 		'model' => array('notempty'),
 		);
@@ -52,14 +52,14 @@ class Category extends CategoriesAppModel {
 			'order' => ''
 			),
 		);
-	
+
 	/* CakeDC Version
 	public $belongsTo = array(
 		'ParentCategory' => array('className' => 'Categories.Category',
 			'foreignKey' => 'category_id',
 			'conditions' => '',
 			'fields' => '',
-			'order' => ''));*/ 
+			'order' => ''));*/
 
 /**
  * hasMany associations
@@ -204,7 +204,7 @@ class Category extends CategoriesAppModel {
  */
 	public function edit($id = null, $data = null) {
 		$conditions = array("{$this->alias}.{$this->primaryKey}" => $id);
-		
+
 		$category = $this->find('first', array(
 			'contain' => array('ParentCategory'),
 			'conditions' => $conditions));
