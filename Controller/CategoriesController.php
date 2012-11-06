@@ -167,7 +167,7 @@ class CategoriesController extends CategoriesAppController {
 	public function edit($id = null) {
 		$this->Category->id = $id;
 		if (!$this->Category->exists()) {
-			throw new NotFoundException(__('Invalid order coupon'));
+			throw new NotFoundException(__('Invalid coupon'));
 		}
 		if ($this->request->is('post') || $this->request->is('put')) {
 			try {
