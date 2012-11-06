@@ -102,45 +102,6 @@ class Category extends CategoriesAppModel {
 	);
 
 
-/**
- * hasAndBelongsToMany associations
- *
- * @var array $hasAndBelongsToMany
- *//*
-	var $hasAndBelongsToMany = array(
-        'CategoryItem' => array(
-            'className' => 'Categories.Categorized',
-       		'joinTable' => 'categorized',
-    		'associationForeignKey' => 'foreign_key',
-            'foreignKey' => 'category_id',
-    		'conditions' => array('Categorized.model' => 'CatalogItem'),
-    		'unique' => false,
-        ),
-        'CatalogItem' => array(
-            'className' => 'Catalogs.CatalogItem',
-       		'joinTable' => 'catalog_items_categories',
-    		'associationForeignKey' => 'catalog_item_id',
-            'foreignKey' => 'category_id',
-    		'unique' => true,
-        ),
-    );  */
-/*
-	public function __construct($id = false, $table = null, $ds = null) {
-		#debug($id);
-		#debug($table);
-		#debug($ds);
-		$this->hasAndBelongsToMany['CategoryItem'] = array(
-	    	'className' => 'Catalogs.CatalogItem',
-	       	'joinTable' => 'categorized',
-	       	'with' => 'categorized',
-	    	'associationForeignKey' => 'foreign_key',
-	        'foreignKey' => 'model',
-	    	'conditions' => array('Categorized.model' => 'CatalogItem', 'Categorized.category_id' => 5),
-	    	'unique' => false,);
-		parent::__construct($id, $table, $ds);
-	} */
-
-
 	function beforeFind($queryData) {
 		$this->order = array("{$this->alias}.name", "{$this->alias}.lft");
 		return $queryData;

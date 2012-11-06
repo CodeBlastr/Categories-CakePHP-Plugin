@@ -68,8 +68,8 @@ class CategoriesController extends CategoriesAppController {
  */
 	public function view($slug = null) {
 		try {
-			# this is put here specifically for the CatalogItems category, so if you change it
-			# make sure that /categories/categories/view/X  (where X = a catalog item related category) looks good still.
+			// this is put here specifically for the products category, so if you change it
+			// make sure that /categories/categories/view/X  (where X = a catalog item related category) looks good still.
 			$category = $this->Category->view($slug);  // equals the category, and contains related items grouped by model
 			$this->paginate['conditions'] = array('ChildCategory.parent_id' => $category['Category']['id']);
 			$this->paginate['fields'] = array('id', 'name');
@@ -354,13 +354,13 @@ class CategoriesController extends CategoriesAppController {
 				));
 			$categorized = Set::extract('/Categorized/foreign_key', $categorized);
 		}
-		# I did set to recursive but it caused multiple instances of the same item to be returned.
-		# it looked to be correlated to the number of images that were in the gallery for catalog items
-		# @todo : find a fix for this because having related data will be necesary at some point.
-		#$this->Category->Categorized->CategoryItem->recursive = 0;
+		// I did set to recursive but it caused multiple instances of the same item to be returned.
+		// it looked to be correlated to the number of images that were in the gallery for catalog items
+		// @todo : find a fix for this because having related data will be necesary at some point.
+		// $this->Category->Categorized->CategoryItem->recursive = 0;
 
-		# to set custom params for a categorized model, go to the model, and set the __construct() function
-		# to output a variable called, "categorizedParams"  (an example can be found in the __construct() function of CatalogItem
+		// to set custom params for a categorized model, go to the model, and set the __construct() function
+		// to output a variable called, "categorizedParams"  (an example can be found in the __construct() function of Product
 		$params = !empty($this->Category->Categorized->CategoryItem->categorizedParams) ? $this->Category->Categorized->CategoryItem->categorizedParams : array();
 		$params = array_merge(array('conditions' => array('CategoryItem.id' => $categorized), 'limit' => $limit), $params);
 		$this->paginate['CategoryItem'] = $params;
@@ -368,8 +368,8 @@ class CategoriesController extends CategoriesAppController {
 
 		return $categoryItems;
 
-		#$this->viewPath = 'elements/categories';
-		#$this->render('category_items');
+		// $this->viewPath = 'elements/categories';
+		// $this->render('category_items');
 	}
 
 
