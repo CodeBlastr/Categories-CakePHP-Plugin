@@ -99,7 +99,7 @@ class CategorizableBehavior extends ModelBehavior {
  * @return boolean
  */
 	public function afterSave($Model, $created) {
-		# this is how the categories data should look when coming in.
+		// this is how the categories data should look when coming in.
 		if (isset($this->data['Category']['Category'])) {
 			$categorized = array($this->modelName => array('id' => array($Model->id)));
 			$categorized['Category']['id'][] = $this->data['Category']['Category'];
