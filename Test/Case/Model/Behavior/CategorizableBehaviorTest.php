@@ -19,8 +19,8 @@ class CategorizableBehaviorTestCase extends CakeTestCase {
  * @var array
  */
 	public $fixtures = array(
-		'plugin.categories.article',
-		'plugin.categories.categorized',
+		'plugin.Categories.Article',
+		'plugin.Categories.Categorized',
 		//'plugin.categories.category',
 		);
 
