@@ -191,7 +191,7 @@ class Category extends CategoriesAppModel {
 
 
 	public function view($slug = null, $params = null) {
-		# if models is empty that means nothing falls in this category
+		// if models is empty that means nothing falls in this category
 		$models = $this->Categorized->find('all', array(
 			'order' => 'Categorized.model',
 			'conditions' => array(
