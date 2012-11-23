@@ -23,7 +23,6 @@ class CategoryFixture extends CakeTestFixture {
  * @var string $name
  */
 	public $name = 'Category';
-    public $useDbConfig = 'test';
 
 /**
  * Table

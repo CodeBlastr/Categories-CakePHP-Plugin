@@ -25,6 +25,11 @@ class Category extends CategoriesAppModel {
  */
 	public $name = 'Category';
 
+/**
+ * Validate
+ * 
+ * @var array $validate
+ */
 	public $validate = array(
 		'model' => array('notempty'),
 		);
@@ -32,12 +37,11 @@ class Category extends CategoriesAppModel {
 /**
  * Behaviors
  *
- * @var array
+ * @var array $actsAs
  */
 	public $actsAs = array(
-		'Tree' => array('parent' => 'parent_id'),
-		/*'Utils.Sluggable' => array(
-			'label' => 'name')*/);
+		'Tree' => array('parent' => 'parent_id')
+		);
 
 /**
  * belongsTo associations
@@ -101,59 +105,59 @@ class Category extends CategoriesAppModel {
 		),
 	);
 
-
+/**
+ * Before find callback
+ */
 	function beforeFind($queryData) {
 		$this->order = array("{$this->alias}.name", "{$this->alias}.lft");
 		return $queryData;
 	}
+    
+/**
+ * Before save callback
+ * 
+ * @param type $options
+ * @return boolean
+ */
+    public function beforeSave($options) {
+        $this->Behaviors->attach('Galleries.Mediable');
+        return true;
+    }
 
 
 /**
- * Adds a new record to the database to category and CategoryOption.
+ * Adds a new Category or CategoryOption.
  *
  * @param array post data, should be Contoller->data
  * @return array
  */
 	public function add($data = null) {
-		if (!empty($data)) {
-			if ($data['Category']['type'] == 'Category') {
-				$this->create();
-				if($result = $this->save($data)) {
-					$categoryId = $this->id;
-					$data['Gallery']['model'] = 'Category';
-					$data['Gallery']['foreign_key'] = $categoryId;
-					if ($data['GalleryImage']['filename']['error'] == 0) {
-						$result = $this->Gallery->GalleryImage->add($data, 'filename');
-					}
-				}
+		if (!empty($data['Category']['type']) && $data['Category']['type'] != 'Category') {
+			$type = $data['Category']['type'];
+			if ( $type == 'Attribute Group' || $type == 'Option Group') {
+				$data['Category']['category_id'] = $data['Category']['parent_id'];
+				$data['Category']['parent_id'] = null;
 			} else {
-				$this->CategoryOption->create();
-				$type = $data['Category']['type'];
-				if ( $type == 'Attribute Group' || $type == 'Option Group') {
-					$data['Category']['category_id'] = $data['Category']['parent_id'];
-					$data['Category']['parent_id'] = null;
-				} else {
-					$data['Category']['category_id'] = $this->CategoryOption->field('CategoryOption.category_id',
-							array('CategoryOption.id' => $data['Category']['parent_id']));
-				}
-
-				$result = $this->CategoryOption->save($data['Category']);
+				$data['Category']['category_id'] = $this->CategoryOption->field('CategoryOption.category_id', array('CategoryOption.id' => $data['Category']['parent_id']));
 			}
 
-			if ($result !== false) {
-				$this->data = array_merge($data, $result);
-				return true;
-			} else {
-				# roll back if a category was created, and there was an error
-				if (!empty($categoryId)) {
-					$this->delete($categoryId);
-				}
-				throw new Exception(__d('categories', 'Could not save the category, please check your inputs.'));
-			}
-			return $return;
+			$this->CategoryOption->create();
+			$result = $this->CategoryOption->save($data['Category']);
+		} else {
+			$this->create();
+			$result = $this->save($data);
 		}
-	}
 
+		if ($result !== false) {
+			$this->data = array_merge($data, $result);
+			return true;
+		} else {
+			throw new Exception(__d('categories', 'Could not save the category.'));
+		}
+		return true;
+	}
+	
+	
 /**
  * Edits an existing Category.
  *
