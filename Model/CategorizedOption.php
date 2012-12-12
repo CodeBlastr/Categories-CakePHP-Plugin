@@ -15,6 +15,7 @@
  * @package categories
  * @subpackage categories.models
  */
+
 class CategorizedOption extends CategoriesAppModel {
 
 /**

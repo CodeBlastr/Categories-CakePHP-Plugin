@@ -299,7 +299,8 @@ class Category extends CategoriesAppModel {
 				array('Categorized.foreign_key'=>$id, 'Categorized.model'=>$model),
 				true
 			);
-			foreach($data['Category']['id'] as $catId) {
+            
+			foreach($data['Category']['id'][0] as $catId) {
 				$modelData[] = array(
 					'model' => $model,
 					'foreign_key' => $id,
@@ -308,8 +309,10 @@ class Category extends CategoriesAppModel {
 			}
 		}
 		if (!empty($data)) {
-			$this->Categorized->saveAll($modelData);
+            
+			$this->Categorized->saveAll($modelData);  
 			$ret = true;
+            
 		}
 		return $ret;
 	}

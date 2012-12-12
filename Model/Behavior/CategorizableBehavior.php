@@ -103,8 +103,8 @@ class CategorizableBehavior extends ModelBehavior {
 		if (isset($this->data['Category']['Category'])) {
 			$categorized = array($this->modelName => array('id' => array($Model->id)));
 			$categorized['Category']['id'][] = $this->data['Category']['Category'];
-			try {
-				$this->Category->categorized($categorized, $Model->alias);
+			try {  
+        		$this->Category->categorized($categorized, $Model->alias);
 			} catch (Exception $e) {
 				throw new Exception ($e->getMessage());
 			}
