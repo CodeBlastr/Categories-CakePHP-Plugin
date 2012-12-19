@@ -299,16 +299,17 @@ class Category extends CategoriesAppModel {
 				array('Categorized.foreign_key'=>$id, 'Categorized.model'=>$model),
 				true
 			);
-            
-			foreach($data['Category']['id'][0] as $catId) {
-				$modelData[] = array(
-					'model' => $model,
-					'foreign_key' => $id,
-					'category_id' => $catId,
-					);
-			}
+            if (!empty($data['Category']['id'][0])) {
+                foreach($data['Category']['id'][0] as $catId) {
+                    $modelData[] = array(
+                        'model' => $model,
+                        'foreign_key' => $id,
+                        'category_id' => $catId,
+                        );
+                }
+            }
 		}
-		if (!empty($data)) {
+		if (!empty($modelData)) {
             
 			$this->Categorized->saveAll($modelData);  
 			$ret = true;
