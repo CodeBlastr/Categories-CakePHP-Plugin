@@ -202,9 +202,6 @@ class Category extends CategoriesAppModel {
 				'Categorized.category_id' => $slug),
 		));
 		$category = $this->find('first', array(
-			#'contain' => array(
-			#	'ParentCategory'
-			#	),
 			'conditions' => array(
 				'or' => array(
 					'Category.id' => $slug,
@@ -213,7 +210,6 @@ class Category extends CategoriesAppModel {
 				),
 			$params,
 			));
-
 		if (empty($category)) {
 			throw new Exception(__d('categories', 'Invalid Category'));
 		} else {
