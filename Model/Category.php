@@ -404,5 +404,17 @@ class Category extends CategoriesAppModel {
 		}
 		return $attributeGroups;
 	}
+    
+    
+    public function getCategoryName($categoryId) {
+        
+        $get_name = $this->findById($categoryId); 
+        return $get_name['Category']['name'];
+    }
+    
+    public function findCategories($model) {
+        
+       return $this->find('all', array('conditions'=> array('model' => $model))); 
+    } 
 
 }
