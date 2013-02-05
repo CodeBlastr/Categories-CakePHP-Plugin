@@ -59,7 +59,7 @@ class CategorizableBehavior extends ModelBehavior {
  * @access public
  * @return boolean
  */
-    public function setup($Model, $config = array()) {
+    public function setup(Model $Model, $config = array()) {
     	$this->settings = array_merge($this->defaults, $config);
 		$this->modelName = !empty($this->settings['modelAlias']) ? $this->settings['modelAlias'] : $Model->alias;
 		//don't think this is necessary, but will save it for future reference in the case that there is a different primary key than id
@@ -75,11 +75,10 @@ class CategorizableBehavior extends ModelBehavior {
  * Remove category data, and pass to the after save function for manual entry.
  *
  * @param object $Model model object
- * @param mixed $id String or integer model ID
  * @access public
  * @return boolean
  */
-	public function beforeSave($Model, $created) {
+	public function beforeSave(Model $Model) {
 		if (isset($Model->data['Category']['Category'])) {
 			$this->data = $Model->data;
 			unset($Model->data['Category']['Category']);
@@ -98,7 +97,7 @@ class CategorizableBehavior extends ModelBehavior {
  * @access public
  * @return boolean
  */
-	public function afterSave($Model, $created) {
+	public function afterSave(Model $Model, $created) {
 		// this is how the categories data should look when coming in.
 		if (isset($this->data['Category']['Category'])) {
 			$categorized = array($this->modelName => array('id' => array($Model->id)));
