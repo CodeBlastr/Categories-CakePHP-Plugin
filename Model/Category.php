@@ -119,7 +119,7 @@ class Category extends CategoriesAppModel {
  * @param type $options
  * @return boolean
  */
-    public function beforeSave($options) {
+    public function beforeSave($options = array()) {
         $this->Behaviors->attach('Galleries.Mediable');
         return true;
     }
