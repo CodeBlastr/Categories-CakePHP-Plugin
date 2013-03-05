@@ -100,7 +100,7 @@ class CategoriesController extends CategoriesAppController {
 
 		if(!empty($this->request->data)) {
 			try {
-				$result = $this->Category->add($this->request->data);
+				$result = $this->Category->save($this->request->data);
 				if ($result === true) {
 					if (!empty($this->request->data['Category']['parent_id']) && empty($this->request->data['Category']['type'])) {
 						# if there was a parent_id then we can assign categories to items
@@ -124,39 +124,25 @@ class CategoriesController extends CategoriesAppController {
 			$this->request->data['Category']['category_id'] = $categoryId;
 		}
 
-		#_viewVars
+		//viewVars
 		$models = $this->Category->listModels();
 		$parents = $this->Category->generateTreeList();
 		$parentId = !empty($this->request->params['named']['parent']) ? $this->request->params['named']['parent'] : null;
 
 		if (!empty($this->request->params['named']['type']) && $this->request->params['named']['type'] == 'Attribute Type') {
-			$options = $this->Category->CategoryOption->find('threaded');
-			$parentOptions = Set::combine($options, '{n}.CategoryOption.id', '{n}.CategoryOption.name');
-			if (!empty($parentOptions) && !empty($parentOptions[$parentId])) {
-				$parentOption = $parentOptions[$parentId];
-			}
-			if (!empty($parentOption)) {
-				$parentCategories = Set::combine($options, '{n}.CategoryOption.name', '{n}.CategoryOption.category_id');
-				if (!empty($parentCategories[$parentOption])) {
-					$optionParentId = $parentCategories[$parentOption];
-				}
-			}
+			echo 'this is a table that doesn\'t exist anymore, if this shows alert admin';
+			break;
 		}
 
-		$parent = !empty($optionParentId) && !empty($parents[$optionParentId]) ? $parents[$optionParentId] : ''; // Shirts
-		$parent = !empty($parents[$parentId]) ? $parents[$parentId] : $parent; // Shirts
-		$parent = !empty($parentOption) ? Inflector::singularize($parent) . ' ' . $parentOption : $parent; // Shirt Sizes
-		// shirt sizes
 		$type = !empty($this->request->params['named']['type']) ? $this->request->params['named']['type'] : 'Category';
 		$model = !empty($this->request->params['named']['model']) ? $this->request->params['named']['model'] : '';
-		$types = $this->Category->getTypes();
 		$pageTitleForLayout = !empty($parent) ? __('Add %s %s to %s', $model, $type, $parent) : __('Add %s %s', $model, $type);
 
 		$this->request->data['Category']['model'] = $model;
 		$this->request->data['Category']['type'] = $type;
 		$this->request->data['Category']['parent_id'] = $parentId;
 		$this->set('page_title_for_layout', $pageTitleForLayout);
-		$this->set(compact('models', 'parents', 'types', 'model', 'parent', 'type', 'parentId'));
+		$this->set(compact('models', 'parents', 'model', 'parent', 'type', 'parentId'));
 	}
 
 /**
@@ -186,13 +172,7 @@ class CategoriesController extends CategoriesAppController {
 		} else {
 			$this->request->data = $this->Category->read(null, $id);
 			$parents = $this->Category->generateTreeList();
-			$options = $this->Category->CategoryOption->find('all', array(
-				'conditions' => array(
-					'CategoryOption.category_id' => $id,
-					'CategoryOption.type' => 'Attribute Group'
-					)
-				));
-			$this->set(compact('parents', 'options'));
+			$this->set('parents', $this->Category->generateTreeList());
 		}
 
 	}
@@ -213,7 +193,9 @@ class CategoriesController extends CategoriesAppController {
  * @return void
  */
 	public function tree() {
-		$this->helpers[] = 'Utils.Tree';
+		echo 'fix and/or delete this';
+		break;
+		/*$this->helpers[] = 'Utils.Tree';
 		$model = !empty($this->request->params['named']['model']) ? $this->request->params['named']['model'] : null;
 		if (!empty($model)) {
 			$params['conditions']['Category.model'] = $model;
@@ -221,7 +203,7 @@ class CategoriesController extends CategoriesAppController {
 			$params = null;
 		}
 		$categories = $this->Category->treeCategoryOptions('threaded', $params);
-		$this->set(compact('categories', 'model'));
+		$this->set(compact('categories', 'model'));*/
 	}
 
 
@@ -261,31 +243,6 @@ class CategoriesController extends CategoriesAppController {
 		}
 		if ($directChildren)
 			echo json_encode($directChildren);
-	}
-
-/*
- * get_all()
- * Get all of the options based on type
- */
-	public function get_all($type, $model = null) {
-		$this->layout = false;
-		$conditions = !empty($model) ? array('Category.model' => $model) : array('Category.model' => null);
-
-		if ($type == 'Category' || $type == 'Attribute Group' || $type == 'Option Group') {
-			$data = $this->Category->generateTreeList($conditions);
-		} else if ($model == 'Catalog') {
-			$parent_type = explode(' ', $type);
-			$data = $this->Category->CategoryOption->find('all', array(
-				'conditions' => array(
-					'CategoryOption.type' => $parent_type[0]. ' Group',
-					),
-				'contain' => array(
-					'Category',
-					),
-				)) ;
-			$data = Set::combine($data, '{n}.CategoryOption.id', array('{0} {1}', '{n}.Category.name', '{n}.CategoryOption.name'));
-		}
-		echo json_encode($data);
 	}
 
 /**
