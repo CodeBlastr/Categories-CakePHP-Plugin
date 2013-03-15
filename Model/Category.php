@@ -125,6 +125,14 @@ class Category extends CategoriesAppModel {
         $this->Behaviors->attach('Galleries.Mediable');
         return true;
     }
+    
+/**
+ * Constructor
+ */
+    public function __construct($id = false, $table = null, $ds = null) {
+		parent::__construct($id, $table, $ds);
+		$this->order = $this->alias.'.lft';
+	}
 	
 	
 /**

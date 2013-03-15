@@ -40,6 +40,7 @@ foreach ($categories as $category):
 		<td class="actions">
 			<?php echo $this->Html->link(__d('categories', 'View'), array('action' => 'view', $category['Category']['id'])); ?>
 			<?php echo $this->Html->link(__d('categories', 'Edit'), array('action' => 'edit', $category['Category']['id'])); ?>
+    		<?php echo $this->Html->link(__d('categories', 'Move Up'), array('action' => 'moveup', $category['Category']['name'], 1)); ?>
 			<?php echo $this->Html->link(__d('categories', 'Delete'), array('action' => 'delete', $category['Category']['id']), null, sprintf(__d('categories', 'Are you sure you want to delete # %s?'), $category['Category']['id'])); ?>
 		</td>
 	</tr>
