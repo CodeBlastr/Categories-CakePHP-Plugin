@@ -30,7 +30,7 @@ class Category extends CategoriesAppModel {
  *
  * @var string $order
  */
-	public $order = 'lft';
+	public $order = 'Category.lft';
 
 /**
  * Validate

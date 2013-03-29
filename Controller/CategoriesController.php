@@ -57,7 +57,9 @@ class CategoriesController extends CategoriesAppController {
  *
  */
 	public function index() {
+		
 		$this->Category->recursive = 0;
+		$this->paginate['order'] = array("{$this->Category->alias}.lft" => 'asc', "{$this->Category->alias}.name" => 'asc');
 		$this->set('categories', $this->paginate());
 	}
 
@@ -73,6 +75,7 @@ class CategoriesController extends CategoriesAppController {
 			$category = $this->Category->view($slug);  // equals the category, and contains related items grouped by model
 			$this->paginate['conditions'] = array('ChildCategory.parent_id' => $category['Category']['id']);
 			$this->paginate['fields'] = array('id', 'name');
+			$this->paginate['order'] = array("{$this->Category->alias}.lft");
 			$childCategories = $this->paginate('ChildCategory');
 		} catch (Exception $e) {
 			$this->Session->setFlash($e->getMessage());
