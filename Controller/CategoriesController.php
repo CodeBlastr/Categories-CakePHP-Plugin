@@ -331,6 +331,27 @@ class CategoriesController extends CategoriesAppController {
 		// $this->viewPath = 'elements/categories';
 		// $this->render('category_items');
 	}
+    
+/**
+ * Move up method
+ *
+ * @param string $name
+ * @param int $delta
+ */
+    function moveup($name = null, $delta = null){
+        $cat = $this->Category->findByName($name);
+        if (empty($cat)) {
+            $this->Session->setFlash('There is no category named ' . $name);
+            $this->redirect(array('action' => 'index'), null, true);
+        }
+        $this->Category->id = $cat['Category']['id'];
+        if ($delta > 0) {
+            $this->Category->moveUp($this->Category->id, abs($delta));
+        } else {
+            $this->Session->setFlash('Please provide a number of positions the category should be moved up.');
+        }
+        $this->redirect(array('action' => 'index'), null, true);
+    }
 
 
 
