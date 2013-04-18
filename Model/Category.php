@@ -263,7 +263,9 @@ class Category extends CategoriesAppModel {
 				true
 			);
             if (!empty($data['Category']['id'][0])) {
-                foreach($data['Category']['id'][0] as $catId) {
+                // foreach($data['Category']['id'][0] as $catId) { // was this (not sure changing it didn't break something)
+                // changed to support BlogPost::add() with categories
+                foreach($data['Category']['id'] as $catId) {
                     $modelData[] = array(
                         'model' => $model,
                         'foreign_key' => $id,
@@ -273,7 +275,6 @@ class Category extends CategoriesAppModel {
             }
 		}
 		if (!empty($modelData)) {
-            
 			$this->Categorized->saveAll($modelData);  
 			$ret = true;
             
