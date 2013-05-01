@@ -90,6 +90,7 @@ class CategoriesController extends CategoriesAppController {
  *
  */
 	public function add($categoryId = null) {
+		
 		if (!empty($this->request->params['named']['parent']) && empty($this->request->params['named']['model'])) :
 			$parent = $this->Category->find('first', array(
 				'conditions' => array(
@@ -101,17 +102,18 @@ class CategoriesController extends CategoriesAppController {
 			endif;
 		endif;
 
-		if(!empty($this->request->data)) {
+		if(!empty($this->request->data['Category'])) {
 			try {
 				$result = $this->Category->save($this->request->data);
-				if ($result === true) {
+				
+				if (!empty($result['Category']['id'])) {
 					if (!empty($this->request->data['Category']['parent_id']) && empty($this->request->data['Category']['type'])) {
 						# if there was a parent_id then we can assign categories to items
 						$this->Session->setFlash(__d('categories', 'Category Saved.  You can assign categories here.', true));
 						$this->redirect(array('action' => 'categorized', 'type' => $this->request->data['Category']['model']));
 					} else {
 						$this->Session->setFlash(__d('categories', 'Category Saved', true));
-						$this->redirect(array('action' => 'tree', 'model' => $this->request->data['Category']['model']));
+						$this->redirect($this->referer());
 					}
 				}
 			} catch (Exception $e) {
@@ -138,7 +140,7 @@ class CategoriesController extends CategoriesAppController {
 		}
 
 		$type = !empty($this->request->params['named']['type']) ? $this->request->params['named']['type'] : 'Category';
-		$model = !empty($this->request->params['named']['model']) ? $this->request->params['named']['model'] : '';
+		$model = !empty($this->request->params['named']['model']) ? $this->request->params['named']['model'] : $this->request->data['model'];
 		$pageTitleForLayout = !empty($parent) ? __('Add %s %s to %s', $model, $type, $parent) : __('Add %s %s', $model, $type);
 
 		$this->request->data['Category']['model'] = $model;
@@ -146,6 +148,12 @@ class CategoriesController extends CategoriesAppController {
 		$this->request->data['Category']['parent_id'] = $parentId;
 		$this->set('page_title_for_layout', $pageTitleForLayout);
 		$this->set(compact('models', 'parents', 'model', 'parent', 'type', 'parentId'));
+		
+		//Ajax Modal Settings this should propable be in the appController beforeFilter
+		if(isset($this->request->data['modal']) && $this->request->data['modal'] == true) {
+			$this->layout = null;
+			$this->render($this->action . '_modal');
+		}
 	}
 
 /**

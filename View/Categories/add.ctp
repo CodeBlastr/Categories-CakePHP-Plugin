@@ -2,7 +2,6 @@
 <h2><?php echo $page_title_for_layout; ?></h2>
 <?php echo $this->Form->create('Category', array('type' => 'file'));?>
 
-	<div id ="ajax"></div>
 <fieldset>
    	<?php
 	if (!empty($this->request->data['Category']['model'])) {
