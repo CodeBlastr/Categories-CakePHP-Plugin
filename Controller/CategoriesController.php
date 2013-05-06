@@ -151,8 +151,8 @@ class CategoriesController extends CategoriesAppController {
 		
 		//Ajax Modal Settings this should propable be in the appController beforeFilter
 		if(isset($this->request->data['modal']) && $this->request->data['modal'] == true) {
-			$this->layout = null;
-			$this->render($this->action . '_modal');
+			$this->layout = 'bootstrap_modal';
+			
 		}
 	}
 
@@ -204,9 +204,9 @@ class CategoriesController extends CategoriesAppController {
  * @return void
  */
 	public function tree() {
-		echo 'fix and/or delete this';
-		break;
-		/*$this->helpers[] = 'Utils.Tree';
+		//echo 'fix and/or delete this';
+		//break;
+		$this->helpers[] = 'Utils.Tree';
 		$model = !empty($this->request->params['named']['model']) ? $this->request->params['named']['model'] : null;
 		if (!empty($model)) {
 			$params['conditions']['Category.model'] = $model;
@@ -214,7 +214,7 @@ class CategoriesController extends CategoriesAppController {
 			$params = null;
 		}
 		$categories = $this->Category->treeCategoryOptions('threaded', $params);
-		$this->set(compact('categories', 'model'));*/
+		$this->set(compact('categories', 'model'));
 	}
 
 
