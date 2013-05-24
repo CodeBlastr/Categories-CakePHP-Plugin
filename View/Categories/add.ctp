@@ -40,7 +40,7 @@ $this->set('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Categories',
 		'items' => array(
-			$this->Html->link('List', array('plugin' => 'categories', 'controller' => 'categories', 'action' => 'tree', 'model' => $model)),
+			$this->Html->link('List', array('plugin' => 'categories', 'controller' => 'categories', 'action' => 'index', 'model' => $model)),
 			)
 		),
 	))); ?>
