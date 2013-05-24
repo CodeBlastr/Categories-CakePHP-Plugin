@@ -204,6 +204,7 @@ class Category extends CategoriesAppModel {
 					App::uses($model, ZuhaInflector::pluginize($model).'.Model');
 					$Model = new $model;
 					$res = $Model->find('all', array(
+						'contain' => array('Category'),
 						'conditions' => array(
 							$model.'.id' => $records
 							),
