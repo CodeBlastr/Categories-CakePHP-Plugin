@@ -258,15 +258,16 @@ class Category extends CategoriesAppModel {
 	public function categorized($data = null, $model) {
 		$modelData = null;
 		$ret = false;
+        
 		foreach($data[$model]['id'] as $id) {
 			$this->Categorized->deleteAll(
 				array('Categorized.foreign_key'=>$id, 'Categorized.model'=>$model),
 				true
 			);
-            if (!empty($data['Category']['Category'][0])) {
+            if (!empty($data['Category']['id'][0])) {
                 // foreach($data['Category']['id'][0] as $catId) { // was this (not sure changing it didn't break something)
                 // changed to support BlogPost::add() with categories
-                foreach($data['Category']['Category'] as $catId) {
+                foreach($data['Category']['id'] as $catId) {
                     $modelData[] = array(
                         'model' => $model,
                         'foreign_key' => $id,
