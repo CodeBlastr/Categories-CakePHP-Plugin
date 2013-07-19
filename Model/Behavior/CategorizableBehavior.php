@@ -101,10 +101,10 @@ class CategorizableBehavior extends ModelBehavior {
 		// this is how the categories data should look when coming in.
 		if (isset($this->data['Category']['Category'])) {
 			$categorized = array($this->modelName => array('id' => array($Model->id)));
-			$categorized['Category']['id'] = $this->data['Category']['Category'];
-			// was this, but it is the wrong format, so fix the incoming data not this line if it broke anything
+			// line following was changed, for courses categorization (not sure if it broke anything)
 			// $categorized['Category']['id'][] = $this->data['Category']['Category'];
-			try {  
+			$categorized['Category']['id'] = $this->data['Category']['Category'];
+			try {
         		$this->Category->categorized($categorized, $Model->alias);
 			} catch (Exception $e) {
 				throw new Exception ($e->getMessage());
