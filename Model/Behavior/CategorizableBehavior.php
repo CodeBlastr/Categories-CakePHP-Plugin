@@ -60,11 +60,13 @@ class CategorizableBehavior extends ModelBehavior {
  * @return boolean
  */
     public function setup(Model $Model, $config = array()) {
+    	
     	$this->settings = array_merge($this->defaults, $config);
 		$this->modelName = !empty($this->settings['modelAlias']) ? $this->settings['modelAlias'] : $Model->alias;
 		//don't think this is necessary, but will save it for future reference in the case that there is a different primary key than id
 		//$this->foreignKey =  !empty($this->settings['foreignKeyName']) ? $this->settings['foreignKeyName'] : $Model->primaryKey;
 		$this->Category = new Category;
+		
     	return true;
 	}
 	
@@ -83,6 +85,7 @@ class CategorizableBehavior extends ModelBehavior {
 			$this->data = $Model->data;
 			unset($Model->data['Category']['Category']);
 		}
+		
 		return true;
 	}
 	
