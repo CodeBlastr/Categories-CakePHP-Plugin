@@ -360,6 +360,27 @@ class CategoriesController extends CategoriesAppController {
         }
         $this->redirect(array('action' => 'index'), null, true);
     }
+	
+	/**
+	 * Funciton to retrieve Categories and Counts
+	 */
+	 
+	 function getCategories ($model = null) {
+	 	$categories = $this->Category->find('all', array(
+	 		'conditions' => array('Category.model' => $model),
+			'contain' => array(
+				'Categorized',
+				'Gallery' => array('GalleryThumbnail')
+				),
+			));
+		
+		if($this->_isRequestedAction()) {
+			return $categories;
+		}else {
+			$this->set('catcount', $trimcategory);
+			$this->request->data = $categories;
+		}
+	 }
 
 
 
