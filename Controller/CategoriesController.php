@@ -370,15 +370,16 @@ class CategoriesController extends CategoriesAppController {
 	 		'conditions' => array('Category.model' => $model),
 			'contain' => array(
 				'Categorized',
-				'Gallery' => array('GalleryThumbnail')
+				'Gallery' => array('GalleryThumb')
 				),
 			));
-		
 		if($this->_isRequestedAction()) {
 			return $categories;
 		}else {
+			
 			$this->set('catcount', $trimcategory);
 			$this->request->data = $categories;
+			
 		}
 	 }
 
