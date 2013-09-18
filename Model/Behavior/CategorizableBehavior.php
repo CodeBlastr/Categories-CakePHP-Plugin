@@ -80,6 +80,7 @@ class CategorizableBehavior extends ModelBehavior {
  * @access public
  * @return boolean
  */
+
 	public function beforeSave(Model $Model) {
 		if (isset($Model->data['Category']['Category'])) {
 			$this->data = $Model->data;
@@ -103,7 +104,9 @@ class CategorizableBehavior extends ModelBehavior {
 	public function afterSave(Model $Model, $created) {
 		// this is how the categories data should look when coming in.
 		if (isset($this->data['Category']['Category'])) {
+			
 			$categorized = array($this->modelName => array('id' => array($Model->id)));
+			
 			// line following was changed, for courses categorization (not sure if it broke anything)
 			// $categorized['Category']['id'][] = $this->data['Category']['Category'];
 			$categorized['Category']['id'] = $this->data['Category']['Category'];
