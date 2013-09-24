@@ -130,6 +130,10 @@ class Category extends CategoriesAppModel {
  * Constructor
  */
     public function __construct($id = false, $table = null, $ds = null) {
+		if(CakePlugin::loaded('Products')) {
+			$this->actsAs[] = 'Products.Purchasable';
+		}
+		
 		parent::__construct($id, $table, $ds);
 		$this->order = $this->alias.'.lft';
 	}
