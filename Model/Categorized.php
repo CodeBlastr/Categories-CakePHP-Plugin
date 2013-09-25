@@ -54,6 +54,9 @@ class Categorized extends CategoriesAppModel {
  * @return void
  */
 	public function __construct($id = false, $table = null, $ds = null) {
+		if(CakePlugin::loaded('Products')) {
+			$this->actsAs['Products.Purchasable'] = array('modelName' => 'Category', 'foreignKey' => 'category_id');
+		}
 		parent::__construct($id, $table, $ds);
 		
 		$this->validate = array(
@@ -62,7 +65,8 @@ class Categorized extends CategoriesAppModel {
 			'category_id' => array(
 				'required' => array('rule' => array('notEmpty'), 'required' => true, 'allowEmpty' => false, 'message' => __d('categories', 'Category id can not be empty'))),
 			'model' => array(
-				'required' => array('rule' => array('notEmpty'), 'required' => true, 'allowEmpty' => false, 'message' => __d('categories', 'Model field can not be empty'))));
+				'required' => array('rule' => array('notEmpty'), 'required' => true, 'allowEmpty' => false, 'message' => __d('categories', 'Model field can not be empty')))
+			);
 	}
 	
 	

@@ -47,7 +47,6 @@ class CategorizableBehavior extends ModelBehavior {
  */
     protected $defaults = array(
 		'modelAlias' => null, // changed to $Model->alias in setup()
-		//'foreignKeyName' => null,
 		);
 
 
@@ -60,14 +59,10 @@ class CategorizableBehavior extends ModelBehavior {
  * @return boolean
  */
     public function setup(Model $Model, $config = array()) {
-    	
-    	$this->settings = array_merge($this->defaults, $config);
-		$this->modelName = !empty($this->settings['modelAlias']) ? $this->settings['modelAlias'] : $Model->alias;
-		//don't think this is necessary, but will save it for future reference in the case that there is a different primary key than id
-		//$this->foreignKey =  !empty($this->settings['foreignKeyName']) ? $this->settings['foreignKeyName'] : $Model->primaryKey;
-		$this->Category = new Category;
-		
-    	return true;
+    	// we have to give a model name, because multiple models use
+    	$this->settings[$Model->name] = array_merge($this->defaults, $config);
+		$this->settings[$Model->name]['modelAlias'] =  !empty($config['modelAlias'])? $config['modelAlias'] : $Model->alias;
+		return true;
 	}
 	
 
@@ -86,7 +81,6 @@ class CategorizableBehavior extends ModelBehavior {
 			$this->data = $Model->data;
 			unset($Model->data['Category']['Category']);
 		}
-		
 		return true;
 	}
 	
@@ -104,19 +98,22 @@ class CategorizableBehavior extends ModelBehavior {
 	public function afterSave(Model $Model, $created) {
 		// this is how the categories data should look when coming in.
 		if (isset($this->data['Category']['Category'])) {
+			$categorized = array($this->settings[$Model->name]['modelAlias'] => array('id' => array($Model->id)));
 			
-			$categorized = array($this->modelName => array('id' => array($Model->id)));
-			
-			// line following was changed, for courses categorization (not sure if it broke anything)
-			// $categorized['Category']['id'][] = $this->data['Category']['Category'];
-			$categorized['Category']['id'] = $this->data['Category']['Category'];
+			if (is_array($this->data['Category']['Category'])) {
+				// this is for checkbox / multiselect submissions (multiple categories)
+				$categorized['Category']['id'] = $this->data['Category']['Category'];
+			} else {
+				// this is for radio button submissions (one category)
+				$categorized['Category']['id'][] = $this->data['Category']['Category'];
+			}
 			try {
-        		$this->Category->categorized($categorized, $Model->alias);
+				$Category = new Category;
+        		$Category->categorized($categorized, $Model->alias);
 			} catch (Exception $e) {
 				throw new Exception ($e->getMessage());
 			}
 		}
-
 	}
 	
 }

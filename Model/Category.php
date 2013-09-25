@@ -128,12 +128,13 @@ class Category extends CategoriesAppModel {
     
 /**
  * Constructor
+ *
+ * @return void
  */
     public function __construct($id = false, $table = null, $ds = null) {
 		if(CakePlugin::loaded('Products')) {
 			$this->actsAs[] = 'Products.Purchasable';
 		}
-		
 		parent::__construct($id, $table, $ds);
 		$this->order = $this->alias.'.lft';
 	}
@@ -262,7 +263,6 @@ class Category extends CategoriesAppModel {
 	public function categorized($data = null, $model) {
 		$modelData = null;
 		$ret = false;
-        
 		foreach($data[$model]['id'] as $id) {
 			$this->Categorized->deleteAll(
 				array('Categorized.foreign_key' => $id, 'Categorized.model'=>$model),
@@ -291,7 +291,6 @@ class Category extends CategoriesAppModel {
 		if (!empty($modelData)) {
 			$this->Categorized->saveAll($modelData);  
 			$ret = true;
-            
 		}
 		return $ret;
 	}
