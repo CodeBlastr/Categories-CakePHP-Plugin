@@ -89,7 +89,6 @@ class CategoriesComponent extends Component {
 		if(in_array($this->Controller->action, $this->searchAction)) {
 			if(isset($this->Controller->request->query['category'])) {
 				$params = explode('__', $this->Controller->request->query['category']);
-				debug($params);
 				foreach($params as $cat) {
 					if(Zuha::is_uuid($cat)) {
 						$catids[] = $cat;
