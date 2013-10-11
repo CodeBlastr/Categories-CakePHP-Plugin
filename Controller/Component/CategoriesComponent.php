@@ -83,6 +83,7 @@ class CategoriesComponent extends Component {
  */
 	public function startup(Controller $controller) {
 		$catids = array();
+		$this->Controller->paginate['conditions'] = array();
 		$this->Controller->loadModel('Categories.Category');
 		$this->categories = $this->Controller->Category->find('list', array('conditions' => array('model' => $this->modelName)));
 		$this->Controller->set('categories', $this->categories);
