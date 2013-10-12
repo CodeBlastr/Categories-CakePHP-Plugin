@@ -361,10 +361,12 @@ class CategoriesController extends CategoriesAppController {
         $this->redirect(array('action' => 'index'), null, true);
     }
 	
-	/**
-	 * Funciton to retrieve Categories and Counts
-	 */
-	 
+/**
+ * Get Categories method
+ * Funciton to retrieve Categories and Counts
+ * 
+ * @param string $model
+ */ 
 	 function getCategories ($model = null) {
 	 	$categories = $this->Category->find('all', array(
 	 		'conditions' => array('Category.model' => $model),
