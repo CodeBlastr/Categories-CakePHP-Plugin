@@ -51,16 +51,44 @@ class CategoriesController extends CategoriesAppController {
 		//debug($this->modelClass);
 		$this->set('modelName', $this->modelClass);
 	}
+	
+/**
+ * Get Categories method
+ * Funciton to retrieve Categories and Counts
+ * 
+ * @param string $model
+ * 
+ * NOTE : we don't need this, just use index with a filter named
+ * EG : /categories/categories/index/filter:model:Model
+ * 
+ */ 
+	 // function getCategories ($model = null) {
+	 	// $categories = $this->Category->find('all', array(
+	 		// 'conditions' => array('Category.model' => $model),
+			// 'contain' => array(
+				// 'Categorized',
+				// 'Gallery' => array('GalleryThumb')
+				// ),
+			// ));
+		// if($this->_isRequestedAction()) {
+			// return $categories;
+		// }else {
+// 			
+			// $this->set('catcount', $trimcategory);
+			// $this->request->data = $categories;
+// 			
+		// }
+	 // }
 
 /**
  * Index method.
  *
  */
 	public function index() {
-		
 		$this->Category->recursive = 0;
 		$this->paginate['order'] = array("{$this->Category->alias}.lft" => 'asc', "{$this->Category->alias}.name" => 'asc');
-		$this->set('categories', $this->paginate());
+		$this->set('categories', $categories = $this->paginate());
+		return $categories;
 	}
 
 /**
@@ -88,19 +116,19 @@ class CategoriesController extends CategoriesAppController {
 /**
  * Add for category.
  *
- */
+ * GET RID OF THIS FUNCTION.  USE THE DASHBOARD
 	public function add($categoryId = null) {
 		
-		if (!empty($this->request->params['named']['parent']) && empty($this->request->params['named']['model'])) :
+		if (!empty($this->request->params['named']['parent']) && empty($this->request->params['named']['model'])) {
 			$parent = $this->Category->find('first', array(
 				'conditions' => array(
 					'Category.id' => $this->request->params['named']['parent']
 					)
 				));
-			if (!empty($parent['Category']['model'])) :
+			if (!empty($parent['Category']['model'])) {
 				$this->redirect(array('action' => 'add', 'model' => $parent['Category']['model'], 'parent' => $parent['Category']['id']));
-			endif;
-		endif;
+			}
+		}
 
 		if(!empty($this->request->data['Category'])) {
 			try {
@@ -108,7 +136,7 @@ class CategoriesController extends CategoriesAppController {
 				
 				if (!empty($result['Category']['id'])) {
 					if (!empty($this->request->data['Category']['parent_id']) && empty($this->request->data['Category']['type'])) {
-						# if there was a parent_id then we can assign categories to items
+						// if there was a parent_id then we can assign categories to items
 						$this->Session->setFlash(__d('categories', 'Category Saved.  You can assign categories here.', true));
 						$this->redirect(array('action' => 'categorized', 'type' => $this->request->data['Category']['model']));
 					} else {
@@ -155,6 +183,29 @@ class CategoriesController extends CategoriesAppController {
 			
 		}
 	}
+ */
+ 
+/**
+ * Add method
+ * Usage : Straight adding of a category no view provided.  Redirect to the referring page.
+ * 
+ * @return void
+ */
+ 	public function add() {
+		if(!empty($this->request->is('post'))) {
+			try {
+				$result = $this->Category->save($this->request->data);
+				$this->Session->setFlash(__d('categories', 'Category Saved', true));
+				$this->redirect($this->referer());
+			} catch (Exception $e) {
+				$this->Session->setFlash($e->getMessage());
+				$this->redirect($this->referer);
+			}
+		} else {
+			throw new NotFoundException(__('Invalid request'));
+		}
+ 	}
+ 
 
 /**
  * Edit for category.
@@ -185,7 +236,7 @@ class CategoriesController extends CategoriesAppController {
 			$parents = $this->Category->generateTreeList();
 			$this->set('parents', $this->Category->generateTreeList());
 		}
-
+		$this->layout = 'default';
 	}
 
 /**
@@ -203,23 +254,29 @@ class CategoriesController extends CategoriesAppController {
  * @param void
  * @return void
  */
-	public function tree() {
-		//echo 'fix and/or delete this';
-		//break;
-		$this->helpers[] = 'Utils.Tree';
-		$model = !empty($this->request->params['named']['model']) ? $this->request->params['named']['model'] : null;
-		if (!empty($model)) {
-			$params['conditions']['Category.model'] = $model;
-		} else {
-			$params = null;
+	public function dashboard() {
+		$this->redirect('admin');
+		
+		$this->helpers[] = 'Utils.Tree'; 
+		$threaded = $this->Category->find('threaded');
+		$models = Set::extract('/Category/model', $this->Category->find('all', array('group' => array('Category.model'), 'fields' => array('Category.model'))));
+		foreach ($models as $model) {
+			foreach ($threaded as $thread) {
+				if ($thread['Category']['model'] == $model) {
+					$categories[$model][] = $thread;
+				}
+			}
 		}
-		$categories = $this->Category->treeCategoryOptions('threaded', $params);
-		$this->set(compact('categories', 'model'));
+		$this->set('categories', $categories);
+		$this->set('models', $models = array_diff($this->Category->listModels(), $models));
+		$this->set('page_title_for_layout', 'Categories Dashboard');
+		$this->set('title_for_layout', 'Categories Dashboard');
 	}
 
 
 /**
- * get_children()
+ * Get children method
+ * 
  * Get children of parentId if parent id is category id else if catalog id find direct children
  * todo: if used further move this logic to model
  */
@@ -252,15 +309,17 @@ class CategoriesController extends CategoriesAppController {
 					$directChildren[$val['Category']['id']] = $val['Category']['name'];
 			}
 		}
-		if ($directChildren)
+		if ($directChildren) {
 			echo json_encode($directChildren);
+		}
 	}
 
 /**
- * categorized()
+ * categorized method
+ * 
  * Assigns categories to the model passed in Named Parameter
- *
- */
+ * 
+ * @return void
 	public function categorized() {
 		if (!empty($this->request->data)) {
 			try {
@@ -290,6 +349,7 @@ class CategoriesController extends CategoriesAppController {
 			}
 		}
 	}
+ */
 
 
 /**
@@ -360,33 +420,13 @@ class CategoriesController extends CategoriesAppController {
         }
         $this->redirect(array('action' => 'index'), null, true);
     }
-	
+
 /**
- * Get Categories method
- * Funciton to retrieve Categories and Counts
+ * is requested action method
  * 
- * @param string $model
- */ 
-	 function getCategories ($model = null) {
-	 	$categories = $this->Category->find('all', array(
-	 		'conditions' => array('Category.model' => $model),
-			'contain' => array(
-				'Categorized',
-				'Gallery' => array('GalleryThumb')
-				),
-			));
-		if($this->_isRequestedAction()) {
-			return $categories;
-		}else {
-			
-			$this->set('catcount', $trimcategory);
-			$this->request->data = $categories;
-			
-		}
-	 }
-
-
-
+ * @return array
+ * @todo Quite sure this is not necessary, you can just have any function do a return
+ */
 	protected function _isRequestedAction() {
 		return array_key_exists('requested', $this->request->params);
 	}

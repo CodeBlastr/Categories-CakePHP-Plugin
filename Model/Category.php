@@ -47,7 +47,8 @@ class Category extends CategoriesAppModel {
  * @var array $actsAs
  */
 	public $actsAs = array(
-		'Tree' => array('parent' => 'parent_id')
+		'Tree' => array('parent' => 'parent_id'),
+		'Galleries.Mediable'
 		);
 
 /**
@@ -95,7 +96,6 @@ class Category extends CategoriesAppModel {
  * hasOne associations
  *
  * @var array $hasOne
- */
 	public $hasOne = array(
 		'Gallery' => array(
 			'className' => 'Galleries.Gallery',
@@ -106,6 +106,20 @@ class Category extends CategoriesAppModel {
 			'order' => ''
 		),
 	);
+ */
+    
+/**
+ * Constructor
+ *
+ * @return void
+ */
+    public function __construct($id = false, $table = null, $ds = null) {
+		if(CakePlugin::loaded('Products')) {
+			$this->actsAs[] = 'Products.Purchasable';
+		}
+		parent::__construct($id, $table, $ds);
+		$this->order = $this->alias.'.lft';
+	}
 
 /**
  * Before find callback
@@ -122,22 +136,10 @@ class Category extends CategoriesAppModel {
  * @return boolean
  */
     public function beforeSave($options = array()) {
+		$data = $this->cleanData($this->data);
         $this->Behaviors->attach('Galleries.Mediable');
-        return true;
+        return parent::beforeSave($options);
     }
-    
-/**
- * Constructor
- *
- * @return void
- */
-    public function __construct($id = false, $table = null, $ds = null) {
-		if(CakePlugin::loaded('Products')) {
-			$this->actsAs[] = 'Products.Purchasable';
-		}
-		parent::__construct($id, $table, $ds);
-		$this->order = $this->alias.'.lft';
-	}
 	
 	
 /**
@@ -307,5 +309,50 @@ class Category extends CategoriesAppModel {
 			throw new Exception(__d('categories', 'Categor record count update failed.'));
 		}
 	}
+	
+
+
+/**
+ * List models method
+ * 
+ * Get all the models that actsAs Categorizable
+ */
+	public function listModels() {
+		$models = App::objects($plugin . '.Model');
+		
+		$plugins = CakePlugin::loaded();
+	    foreach ($plugins as $plugin) {
+	    	// the else here was App::objects($pluginPath . '.Model')  // not totally sure the changing to just plugin, won't break something
+			$models = !empty($models) ? array_merge($models, App::objects($plugin . '.Model')) : App::objects($plugin . '.Model');
+	    }
+    	sort($models);
+	    foreach ($models as $model) {
+			strpos($model, 'AppModel') || strpos($model, 'AppModel') === 0 ? null : $return[$model] = Inflector::humanize(Inflector::underscore($model));
+	    }
+		
+		foreach ($return as $key => $model) {
+			$model = ZuhaInflector::pluginize($model) ? ZuhaInflector::pluginize($model).'.'.$model : $model;
+			$Model = ClassRegistry::init($model);
+			
+			if (isset($Model->actsAs['Categories.Categorizable']) || array_search('Categories.Categorizable', $Model->actsAs)) {
+				// do nothing, the value is there (we just don't remove it)
+			} else {
+				// remove models which aren't categorizable
+				unset($return[$key]);
+			}
+		}
+    	return $return;
+	}
+
+/**
+ * Clean data
+ * 
+ */
+ 	public function cleanData($data) {
+		if ($data[$this->alias]['parent_id'] == '') {
+			$data[$this->alias]['parent_id'] = null;
+		}
+ 		return $data;
+ 	}
     
 }
