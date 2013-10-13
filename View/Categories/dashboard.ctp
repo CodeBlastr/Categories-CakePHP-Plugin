@@ -14,10 +14,10 @@
 						</div>
 						<div class="span5 pull-right">
 							<?php echo $this->Form->create('Category', array('type' => 'file', 'url' => array('action' => 'add')));?>
-							<?php echo $this->Form->hidden('Category.parent_id', array('value' => null)); ?>
 							<?php echo $this->Form->hidden('Category.model', array('value' => $model)); ?>
 							<fieldset>
-							    <?php echo $this->Form->input('Category.name', array('label' => __('New %s Category Name', $model))); ?>
+							    <?php echo $this->Form->input('Category.name', array('label' => false, 'placeholder' => __('New %s Category Name', $model))); ?>
+								<?php echo $this->Form->input('Category.parent_id', array('label' => false, 'empty' => '-- Optional Parent --', 'options' => $options[$model])); ?>
 							</fieldset>
 						    <fieldset>
 						    	<legend class="toggleClick">extras</legend>

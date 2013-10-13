@@ -264,10 +264,12 @@ class CategoriesController extends CategoriesAppController {
 			foreach ($threaded as $thread) {
 				if ($thread['Category']['model'] == $model) {
 					$categories[$model][] = $thread;
+					$options[$model] = $this->Category->generateTreeList(array('Category.model' => $model), null, null, '--');
 				}
 			}
 		}
-		$this->set('categories', $categories);
+		
+		$this->set(compact('categories', 'options'));
 		$this->set('models', $models = array_diff($this->Category->listModels(), $models));
 		$this->set('page_title_for_layout', 'Categories Dashboard');
 		$this->set('title_for_layout', 'Categories Dashboard');
