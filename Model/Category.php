@@ -81,7 +81,7 @@ class Category extends CategoriesAppModel {
 	public $hasMany = array(
 		'ChildCategory' => array(
 			'className' => 'Categories.Category',
-			'foreignKey' => 'id',
+			'foreignKey' => 'parent_id',
 			),
 		'Categorized' => array(
 			'className' => 'Categories.Categorized',

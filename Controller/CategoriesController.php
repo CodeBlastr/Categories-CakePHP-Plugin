@@ -192,7 +192,7 @@ class CategoriesController extends CategoriesAppController {
  * @return void
  */
  	public function add() {
-		if(!empty($this->request->is('post'))) {
+		if($this->request->is('post')) {
 			try {
 				$result = $this->Category->save($this->request->data);
 				$this->Session->setFlash(__d('categories', 'Category Saved', true));
@@ -222,7 +222,7 @@ class CategoriesController extends CategoriesAppController {
 				$result = $this->Category->edit($id, $this->request->data);
 				if ($result === true) {
 					$this->Session->setFlash(__d('categories', 'Category saved', true));
-					$this->redirect(array('action' => 'tree'));
+					$this->redirect(array('action' => 'dashboard'));
 
 				} else {
 					$this->request->data = $result;
