@@ -327,16 +327,13 @@ class Category extends CategoriesAppModel {
 	    }
     	sort($models);
 	    foreach ($models as $model) {
-			strpos($model, 'AppModel') || strpos($model, 'AppModel') === 0 ? null : $return[$model] = Inflector::humanize(Inflector::underscore($model));
+			strpos($model, 'AppModel') || strpos($model, 'AppModel') === 0 ? null : $return[$model] = $model;
 	    }
-		
 		foreach ($return as $key => $model) {
 			$model = ZuhaInflector::pluginize($model) ? ZuhaInflector::pluginize($model).'.'.$model : $model;
 			$Model = ClassRegistry::init($model);
-			
-			if (isset($Model->actsAs['Categories.Categorizable']) || array_search('Categories.Categorizable', $Model->actsAs)) {
-				// do nothing, the value is there (we just don't remove it)
-			} else {
+
+			if (!is_array($Model->actsAs) || !array_search('Categories.Categorizable', $Model->actsAs)) {
 				// remove models which aren't categorizable
 				unset($return[$key]);
 			}
