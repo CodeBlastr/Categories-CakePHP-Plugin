@@ -208,8 +208,9 @@ class Category extends CategoriesAppModel {
 			}
 			if (!empty($associated)) {
 				foreach($associated as $model => $records) {
-					App::uses($model, ZuhaInflector::pluginize($model).'.Model');
-					$Model = new $model;
+					$Model = ClassRegistry::init(ZuhaInflector::pluginize($model).'.'.$model);
+					// App::uses($model, ZuhaInflector::pluginize($model).'.Model');
+					// $Model = new $model;
 					$res = $Model->find('all', array(
 						'contain' => array('Category'),
 						'conditions' => array(
