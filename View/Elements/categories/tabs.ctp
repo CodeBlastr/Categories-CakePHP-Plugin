@@ -53,7 +53,7 @@ foreach ($list as $catId => $catName) {
 								<?php foreach ($set as $slide) : ?>
 								<li>
 									<img src="/theme/Default/media/images/<?php echo $slide['Media'][0]['filename'].'.'.$slide['Media'][0]['extension'] ?>"  style="max-width: 290px;" />
-									<a href="/media/mediaGalleries/canvas/<?php echo $slide['MediaGallery']['id']?>/<?php echo $slide['Media'][0]['id']?>" class="btn btn-warning">Personalize</a>
+									<a href="/media/mediaGalleries/duplicateGallery/<?php echo $slide['MediaGallery']['id']?>" class="btn btn-warning">Personalize</a>
 								</li>
 								<?php endforeach; ?>
 							</ul>
