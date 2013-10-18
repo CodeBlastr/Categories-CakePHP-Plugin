@@ -34,10 +34,10 @@ foreach ($list as $catId => $catName) {
 				<?php if (isset($cat['Associated'])) : ?>
 				<?php
 				$iSlide = 0;
-				foreach ($cat['Associated'] as $slide) {
+				foreach ($cat['Associated']['MediaGallery'] as $slide) {
 					$slides[] = $slide;
 					$iSlide++;
-					if ($iSlide === 4 || $iSlide === count($cat['Associated'])) {
+					if ($iSlide === 4 || $iSlide === count($cat['Associated']['MediaGallery'])) {
 						$sets[] = $slides;
 						$slides = array();
 						$iSlide = 0;
@@ -52,8 +52,8 @@ foreach ($list as $catId => $catName) {
 							<ul>
 								<?php foreach ($set as $slide) : ?>
 								<li>
-									<img src="/theme/Default/media/images/<?php echo $slide[0]['Media'][0]['filename'].'.'.$slide[0]['Media'][0]['extension'] ?>"  style="max-width: 290px;" />
-									<a href="/media/mediaGalleries/canvas/<?php echo $slide[0]['MediaGallery']['id']?>/<?php echo $slide[0]['Media'][0]['id']?>" class="btn btn-warning">Personalize</a>
+									<img src="/theme/Default/media/images/<?php echo $slide['Media'][0]['filename'].'.'.$slide['Media'][0]['extension'] ?>"  style="max-width: 290px;" />
+									<a href="/media/mediaGalleries/canvas/<?php echo $slide['MediaGallery']['id']?>/<?php echo $slide['Media'][0]['id']?>" class="btn btn-warning">Personalize</a>
 								</li>
 								<?php endforeach; ?>
 							</ul>
