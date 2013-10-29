@@ -60,7 +60,7 @@ class CategoryHelper extends AppHelper {
 		return $output;
 	}
 	
-	function _recursiveUl($array) {
+	protected function _recursiveUl($array) {
 		$output = '';
 		if (!empty($array)) {
 			$output .= '<ul>';
@@ -75,7 +75,7 @@ class CategoryHelper extends AppHelper {
 		return $output;
 	}
 	
-	function _selectForm($array, $options) {
+	protected function _selectForm($array, $options) {
 		$output = '';
 		if (!empty($array)) {
 			$output .= '<form method="post">';
@@ -95,7 +95,7 @@ class CategoryHelper extends AppHelper {
 		return $output;
 	}
 	
-	function _handlePost() {
+	protected function _handlePost() {
 		if (!empty($this->request->data['Category'])) {
 			$categorized = array($this->request->data['Category']['model'] => array('id' => array($this->request->data['Category']['foreignKey'])));
 			if (is_array($this->request->data['Category']['Category'])) {
