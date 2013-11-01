@@ -61,10 +61,34 @@ class CategorizableBehavior extends ModelBehavior {
     public function setup(Model $Model, $config = array()) {
     	// we have to give a model name, because multiple models use
     	$this->settings[$Model->name] = array_merge($this->defaults, $config);
-		$this->settings[$Model->name]['modelAlias'] =  !empty($config['modelAlias'])? $config['modelAlias'] : $Model->alias;
+		$this->settings[$Model->name]['modelAlias'] = !empty($config['modelAlias']) ? $config['modelAlias'] : $Model->alias;
+		
+		//Add the HasMany Relationship to the $Model
+		$Model->bindModel(
+	        array('hasAndBelongsToMany' => array(
+	        	'Category' =>
+	            	array(
+	                	'className' => 'Categories.Category',
+	                	'joinTable' => 'categorized',
+	                	'foreignKey' => 'foreign_key',
+	                	'associationForeignKey' => 'category_id',
+	                	'conditions' => array(
+	                		'Categorized.model' => $Model->alias
+	                	)
+	            	)
+	        	)
+			), false);
+		
 		return true;
 	}
 	
+
+	public function beforeFind(Model $Model, $query) {
+		$query['contain'][] = 'Category';
+		//debug($query);
+		return parent::beforeFind($Model, $query);
+	}
+
 
 /**
  * Before save method.
@@ -75,7 +99,6 @@ class CategorizableBehavior extends ModelBehavior {
  * @access public
  * @return boolean
  */
-
 	public function beforeSave(Model $Model, $options = array()) {
 		if (isset($Model->data['Category']['Category'])) {
 			$this->data = $Model->data;
