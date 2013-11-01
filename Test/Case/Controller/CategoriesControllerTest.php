@@ -195,96 +195,96 @@ class CategoriesControllerTestCase extends CakeTestCase {
 		$this->assertFlash('Invalid Category');
 		//$this->Categories->expectExactRedirectCount();
 	}
-
-/**
- * testAdminIndex
- *
- * @return void
- */
-	public function testAdminIndex() {
-		//$this->Categories->Auth->setReturnValue('user', 'user-1', array('id'));
-		$this->Categories->Auth
-			->expects($this->any())
-			->method('user')
-			->will($this->returnValue('user-1'));
-		$this->Categories->admin_index();
-		$this->assertTrue(!empty($this->Categories->viewVars['categories']));
-	}
-
-/**
- * testAdminAdd
- *
- * @return void
- */
-	public function testAdminAdd() {
-		//$this->Categories->Auth->setReturnValue('user', 'user-1', array('id'));
-		$this->Categories->request->data = $this->record;
-		unset($this->Categories->request->data['Category']['id']);
-		$this->Categories->admin_add();
-		//$this->Categories->expectRedirect(array('action' => 'index'));
-		$this->assertFlash('The category has been saved');
-		//$this->Categories->expectExactRedirectCount();
-	}
-
-/**
- * testAdminEdit
- *
- * @return void
- */
-	public function testAdminEdit() {
-		//$this->Categories->Auth->setReturnValue('user', 'user-1', array('id'));
-		$this->Categories->Auth
-			->expects($this->any())
-			->method('user')
-			->will($this->returnValue('user-1'));
-		$this->Categories->admin_edit('category-1');
-		$this->assertEqual($this->Categories->request->data['Category'], $this->record['Category']);
-
-		$this->Categories->request->data = $this->record;
-		$this->Categories->admin_edit('category-1');
-		//$this->Categories->expectRedirect(array('action' => 'view', 'slug1'));
-		$this->assertFlash('Category saved');
-		//$this->Categories->expectExactRedirectCount();
-	}
-
-/**
- * testAdminView
- *
- * @return void
- */
-	public function testAdminView() {
-		//$this->Categories->Auth->setReturnValue('user', 'user-1', array('id'));
-		$this->Categories->admin_view('first_category');
-		$this->assertTrue(!empty($this->Categories->viewVars['category']));
-
-		$this->Categories->admin_view('WRONG-ID');
-		//$this->Categories->expectRedirect(array('action' => 'index'));
-		$this->assertFlash('Invalid Category');
-		//$this->Categories->expectExactRedirectCount();
-	}
-
-/**
- * testAdminDelete
- *
- * @return void
- */
-	public function testAdminDelete() {
-		//$this->Categories->Auth->setReturnValue('user', 'user-1', array('id'));
-		$this->Categories->Auth
-			->expects($this->any())
-			->method('user')
-			->will($this->returnValue('user-1'));
-		$this->Categories->admin_delete('WRONG-ID');
-		//$this->Categories->expectRedirect(array('action' => 'index')); //@todo what todo with redirects
-		$this->assertFlash('Invalid Category');
-
-		$this->Categories->admin_delete('category-1');
-		$this->assertTrue(!empty($this->Categories->viewVars['category']));
-
-		$this->Categories->request->data = array('Category' => array('confirmed' => 1));
-		$this->Categories->admin_delete('category-1');
-		//$this->Categories->expectRedirect(array('action' => 'index'));
-		$this->assertFlash('Category deleted');
-		//$this->Categories->expectExactRedirectCount();
-	}
+// we don't need admin_ views anymore
+// /**
+ // * testAdminIndex
+ // *
+ // * @return void
+ // */
+	// public function testAdminIndex() {
+		// //$this->Categories->Auth->setReturnValue('user', 'user-1', array('id'));
+		// $this->Categories->Auth
+			// ->expects($this->any())
+			// ->method('user')
+			// ->will($this->returnValue('user-1'));
+		// $this->Categories->index();
+		// $this->assertTrue(!empty($this->Categories->viewVars['categories']));
+	// }
+// 
+// /**
+ // * testAdminAdd
+ // *
+ // * @return void
+ // */
+	// public function testAdminAdd() {
+		// //$this->Categories->Auth->setReturnValue('user', 'user-1', array('id'));
+		// $this->Categories->request->data = $this->record;
+		// unset($this->Categories->request->data['Category']['id']);
+		// $this->Categories->add();
+		// //$this->Categories->expectRedirect(array('action' => 'index'));
+		// $this->assertFlash('The category has been saved');
+		// //$this->Categories->expectExactRedirectCount();
+	// }
+// 
+// /**
+ // * testAdminEdit
+ // *
+ // * @return void
+ // */
+	// public function testAdminEdit() {
+		// //$this->Categories->Auth->setReturnValue('user', 'user-1', array('id'));
+		// $this->Categories->Auth
+			// ->expects($this->any())
+			// ->method('user')
+			// ->will($this->returnValue('user-1'));
+		// $this->Categories->edit('category-1');
+		// $this->assertEqual($this->Categories->request->data['Category'], $this->record['Category']);
+// 
+		// $this->Categories->request->data = $this->record;
+		// $this->Categories->admin_edit('category-1');
+		// //$this->Categories->expectRedirect(array('action' => 'view', 'slug1'));
+		// $this->assertFlash('Category saved');
+		// //$this->Categories->expectExactRedirectCount();
+	// }
+// 
+// /**
+ // * testAdminView
+ // *
+ // * @return void
+ // */
+	// public function testAdminView() {
+		// //$this->Categories->Auth->setReturnValue('user', 'user-1', array('id'));
+		// $this->Categories->view('first_category');
+		// $this->assertTrue(!empty($this->Categories->viewVars['category']));
+// 
+		// $this->Categories->admin_view('WRONG-ID');
+		// //$this->Categories->expectRedirect(array('action' => 'index'));
+		// $this->assertFlash('Invalid Category');
+		// //$this->Categories->expectExactRedirectCount();
+	// }
+// 
+// /**
+ // * testAdminDelete
+ // *
+ // * @return void
+ // */
+	// public function testAdminDelete() {
+		// //$this->Categories->Auth->setReturnValue('user', 'user-1', array('id'));
+		// $this->Categories->Auth
+			// ->expects($this->any())
+			// ->method('user')
+			// ->will($this->returnValue('user-1'));
+		// $this->Categories->delete('WRONG-ID');
+		// //$this->Categories->expectRedirect(array('action' => 'index')); //@todo what todo with redirects
+		// $this->assertFlash('Invalid Category');
+// 
+		// $this->Categories->admin_delete('category-1');
+		// $this->assertTrue(!empty($this->Categories->viewVars['category']));
+// 
+		// $this->Categories->request->data = array('Category' => array('confirmed' => 1));
+		// $this->Categories->admin_delete('category-1');
+		// //$this->Categories->expectRedirect(array('action' => 'index'));
+		// $this->assertFlash('Category deleted');
+		// //$this->Categories->expectExactRedirectCount();
+	// }
 }
