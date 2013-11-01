@@ -70,7 +70,7 @@ class Categorized extends CategoriesAppModel {
 	}
 	
 	
-	public function afterSave($created) {
+	public function afterSave($created, $options = array()) {
 		if (!empty($this->data['Categorized']['category_id'])) {
 			// update the category record count
 			try {
