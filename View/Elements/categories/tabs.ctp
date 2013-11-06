@@ -33,6 +33,7 @@ foreach ($list as $catId => $catName) {
 				
 				<?php if (isset($cat['Associated'])) : ?>
 				<?php
+				$sets = array();
 				$iSlide = 0;
 				foreach ($cat['Associated']['MediaGallery'] as $slide) {
 					$slides[] = $slide;
