@@ -9,7 +9,7 @@
 			<div id="<?php echo $model; ?>" class="accordion-body collapse <?php echo $i==0 ? 'in' : null; ?>" style="max-height: 200px;overflow:scroll;">
 				<div class="panel-body">
 					<div class="row-fluid">
-						<div class="span5 col-md-5 pull-left">
+						<div class="span5 col-md-7 pull-left">
 							<?php echo $this->Tree->generate($thread, array('element' => 'categories/tree_item', 'class' => 'tree')); ?>
 						</div>
 						<div class="span5 col-md-5 pull-right">
