@@ -26,9 +26,9 @@ class CategoryHelper extends AppHelper {
 			                 	// 'Category.id = Categorized.category_id'
 					   // ))
 			         // );
-		$data = $this->Category->find('all', array(
-			'contain' => 'Categorized'
-			));
+		$defaults = array('contain' => 'Categorized');
+		$options = Set::merge($options, $defaults);
+		$data = $this->Category->find('all', $options);
 		return $data;
 	}
 	
