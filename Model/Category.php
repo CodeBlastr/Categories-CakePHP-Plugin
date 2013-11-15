@@ -136,7 +136,7 @@ class Category extends CategoriesAppModel {
  * @return boolean
  */
     public function beforeSave($options = array()) {
-		$data = $this->cleanData($this->data);
+		$this->data = $this->cleanData($this->data);
         $this->Behaviors->attach('Galleries.Mediable');
         return parent::beforeSave($options);
     }
@@ -347,7 +347,7 @@ class Category extends CategoriesAppModel {
  * 
  */
  	public function cleanData($data) {
-		if ($data[$this->alias]['parent_id'] == '') {
+		if (empty($data[$this->alias]['parent_id'])) {
 			$data[$this->alias]['parent_id'] = null;
 		}
  		return $data;
