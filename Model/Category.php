@@ -136,7 +136,7 @@ class Category extends CategoriesAppModel {
  * @return boolean
  */
     public function beforeSave($options = array()) {
-		$data = $this->cleanData($this->data);
+		$this->data = $this->cleanData($this->data);
         $this->Behaviors->attach('Galleries.Mediable');
         return parent::beforeSave($options);
     }
@@ -333,8 +333,7 @@ class Category extends CategoriesAppModel {
 		foreach ($return as $key => $model) {
 			$model = ZuhaInflector::pluginize($model) ? ZuhaInflector::pluginize($model).'.'.$model : $model;
 			$Model = ClassRegistry::init($model);
-
-			if (!is_array($Model->actsAs) || !array_search('Categories.Categorizable', $Model->actsAs)) {
+			if (!is_array($Model->actsAs) || (!array_search('Categories.Categorizable', $Model->actsAs) && empty($Model->actsAs['Categories.Categorizable']))) {
 				// remove models which aren't categorizable
 				unset($return[$key]);
 			}
@@ -347,7 +346,7 @@ class Category extends CategoriesAppModel {
  * 
  */
  	public function cleanData($data) {
-		if ($data[$this->alias]['parent_id'] == '') {
+		if (empty($data[$this->alias]['parent_id'])) {
 			$data[$this->alias]['parent_id'] = null;
 		}
  		return $data;
