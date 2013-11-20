@@ -10,6 +10,21 @@ class CategoryHelper extends AppHelper {
 		}
 	}
 	
+	public function findThreaded (){
+		$this->Category = ClassRegistry::init('Categories.Category');
+		$threaded = $this->Category->find('threaded');
+		$models = Set::extract('/Category/model', $this->Category->find('all', array('group' => array('Category.model'), 'fields' => array('Category.model'))));
+		foreach ($models as $model) {
+			foreach ($threaded as $thread) {
+				if ($thread['Category']['model'] == $model) {
+					$categories[$model][] = $thread;
+					$options[$model] = $this->Category->generateTreeList(array('Category.model' => $model), null, null, '--');
+				}
+			}
+		}
+		return $categories; 
+	}
+	
 	public function loadData($options = array()) {
 		$this->Category = ClassRegistry::init('Categories.Category');
 		// $joins = array(
