@@ -333,7 +333,7 @@ class Category extends CategoriesAppModel {
 		foreach ($return as $key => $model) {
 			$model = ZuhaInflector::pluginize($model) ? ZuhaInflector::pluginize($model).'.'.$model : $model;
 			$Model = ClassRegistry::init($model);
-			if (!is_array($Model->actsAs) || (!array_search('Categories.Categorizable', $Model->actsAs) && empty($Model->actsAs['Categories.Categorizable']))) {
+			if (!is_array($Model->actsAs) || (!array_search('Categories.Categorizable', $Model->actsAs) && !array_key_exists('Categories.Categorizable', $Model->actsAs))) {
 				// remove models which aren't categorizable
 				unset($return[$key]);
 			}

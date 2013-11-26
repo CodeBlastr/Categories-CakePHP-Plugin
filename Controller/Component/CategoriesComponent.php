@@ -100,10 +100,13 @@ class CategoriesComponent extends Component {
 						}
 					}
 				}
+			//debug($catids);exit;
 			$modelids = $this->Controller->Category->Categorized->find('all', array('conditions' => array('Categorized.model' => $this->modelName, 'Categorized.category_id' => $catids)));	
-			$modelids = Set::classicExtract($modelids, '{n}.Categorized.foreign_key');
-			$modelids = array_unique($modelids);
-			$this->Controller->paginate['conditions'][$this->modelName.'.id'] = $modelids;
+			if($modelids) {
+				$modelids = Set::classicExtract($modelids, '{n}.Categorized.foreign_key');
+				$modelids = array_unique($modelids);
+				$this->Controller->paginate['conditions'][$this->modelName.'.id'] = $modelids;
+			}
 		}
 	}
 	}
