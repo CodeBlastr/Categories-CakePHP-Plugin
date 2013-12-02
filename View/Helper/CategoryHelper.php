@@ -9,6 +9,14 @@ class CategoryHelper extends AppHelper {
 			$this->_handlePost();
 		}
 	}
+
+/**
+ * Find method
+ */
+ 	public function find($type = 'first', $params = array()) {
+		$this->Category = ClassRegistry::init('Categories.Category');
+ 		return $this->Category->find($type, $params);
+ 	}
 	
 	public function findThreaded (){
 		$this->Category = ClassRegistry::init('Categories.Category');

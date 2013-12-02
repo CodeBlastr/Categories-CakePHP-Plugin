@@ -12,5 +12,3 @@ print'<div class="category-list">';
 	 echo '</ul>';
  }
 print '</div>';
-
- ?>
