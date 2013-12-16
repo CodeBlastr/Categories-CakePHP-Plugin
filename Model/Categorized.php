@@ -81,7 +81,8 @@ class Categorized extends CategoriesAppModel {
 				// not sure what? 
 			}
 		}
-		return true;
+		return parent::afterSave($created, $options);
+		
 	}
 
 }
