@@ -196,7 +196,7 @@ class CategoriesController extends CategoriesAppController {
 		if($this->request->is('post')) {
 			try {
 				$result = $this->Category->save($this->request->data);
-				$this->Session->setFlash(__d('categories', 'Category Saved', true));
+				$this->Session->setFlash(__d('categories', 'Category Saved', true), 'flash_success');
 				$this->redirect($this->referer());
 			} catch (Exception $e) {
 				$this->Session->setFlash($e->getMessage());
@@ -216,13 +216,13 @@ class CategoriesController extends CategoriesAppController {
 	public function edit($id = null) {
 		$this->Category->id = $id;
 		if (!$this->Category->exists()) {
-			throw new NotFoundException(__('Invalid coupon'));
+			throw new NotFoundException(__('Invalid category'));
 		}
 		if ($this->request->is('post') || $this->request->is('put')) {
 			try {
 				$result = $this->Category->edit($id, $this->request->data);
 				if ($result === true) {
-					$this->Session->setFlash(__d('categories', 'Category saved', true));
+					$this->Session->setFlash(__d('categories', 'Category saved', true), 'flash_success');
 					$this->redirect(array('action' => 'dashboard'));
 
 				} else {
