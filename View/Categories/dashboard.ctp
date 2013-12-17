@@ -6,7 +6,7 @@
 			<div class="panel-heading">
 				<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#<?php echo $model; ?>"> <?php echo $model; ?> Categories</a>
 			</div>
-			<div id="<?php echo $model; ?>" class="accordion-body collapse <?php echo $i==0 ? 'in' : null; ?>" style="max-height: 200px;overflow:scroll;">
+			<div id="<?php echo $model; ?>" class="accordion-body collapse <?php echo $i==0 ? 'in' : null; ?>">
 				<div class="panel-body">
 					<div class="row-fluid">
 						<div class="span5 col-md-7 pull-left">
