@@ -70,6 +70,7 @@ class CategorizableBehavior extends ModelBehavior {
 	            	array(
 	                	'className' => 'Categories.Category',
 	                	'joinTable' => 'categorized',
+	                	//'with' => 'Categories.Categorized',
 	                	'foreignKey' => 'foreign_key',
 	                	'associationForeignKey' => 'category_id',
 	                	'conditions' => array(
@@ -78,14 +79,11 @@ class CategorizableBehavior extends ModelBehavior {
 	            	)
 	        	)
 			), false);
-		
-		return true;
 	}
 	
 
 	public function beforeFind(Model $Model, $query) {
 		$query['contain'][] = 'Category';
-		//debug($query);
 		return parent::beforeFind($Model, $query);
 	}
 
