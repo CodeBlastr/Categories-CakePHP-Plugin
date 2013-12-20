@@ -27,14 +27,18 @@ foreach ($list as $catId => $catName) {
 
 		<div class="tab-content" id="myTabContent1">
 
-<?php $i = 0; foreach ($catArray as $cat) : $i++;?>	
+<?php
+$i = 0;
+foreach ($catArray as $cat) :
+	$i++;
+	$sets = $slides = array();
+	$iSlide = 0;
+?>	
 
 			<div class="tab-pane fade" id="tab<?php echo $i ?>">
 				
 				<?php if (isset($cat['Associated'])) : ?>
 				<?php
-				$sets = array();
-				$iSlide = 0;
 				foreach ($cat['Associated']['MediaGallery'] as $slide) {
 					$slides[] = $slide;
 					$iSlide++;
@@ -53,21 +57,21 @@ foreach ($list as $catId => $catName) {
 							<ul>
 								<?php foreach ($set as $slide) : ?>
 								<li>
-									<img src="/theme/Default/media/images/<?php echo $slide['Media'][0]['filename'].'.'.$slide['Media'][0]['extension'] ?>"  style="max-width: 290px;" />
-									<a href="/media/mediaGalleries/duplicateGallery/<?php echo $slide['MediaGallery']['id']?>" class="btn btn-warning">Personalize</a>
+									<img src="/theme/Default/media/images/<?php echo $slide['Media'][0]['filename'].'.'.$slide['Media'][0]['extension'] ?>"  style="max-width: 285px;" />
+									<a href="/media/mediaGalleries/duplicateGallery/<?php echo $slide['MediaGallery']['id']?>" class="btn btn-warning btn-personalize">Personalize</a>
 								</li>
 								<?php endforeach; ?>
 							</ul>
 						</div>
 						<?php $iSet++; endforeach; ?>
 					</div>
-					<?php if (count($sets) > 4) : ?>
+					<?php if (count($sets) > 1) : ?>
 					<a class="left carousel-control" data-slide="prev" href="#myCarousel<?php echo $i ?>">&nbsp;</a><a class="right carousel-control" data-slide="next" href="#myCarousel<?php echo $i ?>">&nbsp;</a>
 					<?php endif; ?>
 				</div>
 				
 				<?php else : ?>
-					<p>no items in this category yet</p>
+					<p style="text-align: center;">no items in this category yet</p>
 				<?php endif; ?>
 				
 			</div>
