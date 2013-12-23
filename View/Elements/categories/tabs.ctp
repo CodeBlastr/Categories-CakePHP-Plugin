@@ -10,7 +10,7 @@ foreach ($list as $catId => $catName) {
 
 <div class="card-builder-con c-builder">
 	<section id="tabs">
-		
+
 		<div class="bs-docs-example">
 			<div class="carousel slide" id="myCarousel">
 				<div class="carousel-cat">
@@ -33,23 +33,27 @@ foreach ($catArray as $cat) :
 	$i++;
 	$sets = $slides = array();
 	$iSlide = 0;
-?>	
+?>
 
 			<div class="tab-pane fade" id="tab<?php echo $i ?>">
-				
+
 				<?php if (isset($cat['Associated'])) : ?>
 				<?php
+				$lastIndex = count($cat['Associated']['MediaGallery']) - 1;
 				foreach ($cat['Associated']['MediaGallery'] as $slide) {
 					$slides[] = $slide;
 					$iSlide++;
-					if ($iSlide === 4 || $iSlide === count($cat['Associated']['MediaGallery'])) {
+					if (
+						$iSlide === 4 // close set on the 4th slide..
+						|| $cat['Associated']['MediaGallery'][$lastIndex] === $slide // ..or if on the last slide
+					) {
 						$sets[] = $slides;
 						$slides = array();
 						$iSlide = 0;
 					}
 				}
 				?>
-				
+
 				<div class="carousel slide" id="myCarousel<?php echo $i ?>">
 					<div class="carousel-inner">
 						<?php $iSet = 0; foreach ($sets as $set) : ?>
@@ -66,14 +70,15 @@ foreach ($catArray as $cat) :
 						<?php $iSet++; endforeach; ?>
 					</div>
 					<?php if (count($sets) > 1) : ?>
-					<a class="left carousel-control" data-slide="prev" href="#myCarousel<?php echo $i ?>">&nbsp;</a><a class="right carousel-control" data-slide="next" href="#myCarousel<?php echo $i ?>">&nbsp;</a>
+					<a class="left carousel-control btn btn-warning" data-slide="prev" href="#myCarousel<?php echo $i ?>"><i class="icon icon-chevron-left"></i></a>
+					<a class="right carousel-control btn btn-warning" data-slide="next" href="#myCarousel<?php echo $i ?>"><i class="icon icon-chevron-right"></i></a>
 					<?php endif; ?>
 				</div>
-				
+
 				<?php else : ?>
 					<p style="text-align: center;">no items in this category yet</p>
 				<?php endif; ?>
-				
+
 			</div>
 
 <?php endforeach; ?>
@@ -85,5 +90,5 @@ foreach ($catArray as $cat) :
 <script type="text/javascript">
 	$(document).ready(function() {
 		$('.carousel').carousel('pause');
-	}); 
+	});
 </script>
