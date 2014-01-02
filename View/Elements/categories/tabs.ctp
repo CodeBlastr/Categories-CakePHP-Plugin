@@ -61,7 +61,7 @@ foreach ($catArray as $cat) :
 							<ul>
 								<?php foreach ($set as $slide) : ?>
 								<li>
-									<img src="/theme/Default/media/images/<?php echo $slide['Media'][0]['filename'].'.'.$slide['Media'][0]['extension'] ?>"  style="max-width: 285px;" />
+									<?php echo $this->Media->display($slide['Media'][0], array('width' => '220', 'height' => '311')) ?>
 									<a href="/media/mediaGalleries/duplicateGallery/<?php echo $slide['MediaGallery']['id']?>" class="btn btn-warning btn-personalize">Personalize</a>
 								</li>
 								<?php endforeach; ?>
