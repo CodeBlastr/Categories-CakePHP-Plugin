@@ -15,6 +15,7 @@ App::uses('CategoriesAppModel', 'Categories.Model');
  *
  * @package categories
  * @subpackage categories.models
+ * @property TreeBehavior Tree
  */
 class Category extends CategoriesAppModel {
 
