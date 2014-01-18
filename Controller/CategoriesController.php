@@ -12,7 +12,7 @@
  * @copyright Copyright 2010, Cake Development Corporation (http://cakedc.com)
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-
+App::uses('CategoriesAppController', 'Categories.Controller');
 App::import('Model', 'Categories.Category');
 
 /**
@@ -21,7 +21,7 @@ App::import('Model', 'Categories.Category');
  * @package categories
  * @subpackage categories.controllers
  */
-class CategoriesController extends CategoriesAppController {
+class AppCategoriesController extends CategoriesAppController {
 
 	public $allowedActions = array('requestForItems');
 	
@@ -432,5 +432,10 @@ class CategoriesController extends CategoriesAppController {
  */
 	protected function _isRequestedAction() {
 		return array_key_exists('requested', $this->request->params);
+	}
+}
+
+if (!isset($refuseInit)) {
+	class CategoriesController extends AppCategoriesController {
 	}
 }
