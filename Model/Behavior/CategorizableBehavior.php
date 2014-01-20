@@ -81,10 +81,57 @@ class CategorizableBehavior extends ModelBehavior {
 			), false);
 	}
 	
-
+	
+/**
+ * After find callback. Can be used to modify any results returned by find.
+ * 
+ * This is used to attach the actual Media to the $Model Data and removes the attachment data
+ * 
+ * @todo There is probable a better way to do this with model binding and associations
+ * 
+ *
+ * @param Model $Model Model using this behavior
+ * @param mixed $results The results of the find operation
+ * @param boolean $primary Whether this model is being queried directly (vs. being queried as an association)
+ * @return mixed An array value will replace the value of $results - any other value will be ignored.
+ */
 	public function beforeFind(Model $Model, $query) {
+		//Allows us to pass $query['media'] = false to not contain media
+		if(isset($query['category']) && !$query['category']) {
+			return $query;
+		}
+		if(empty($Model->hasAndBelongsToMany['Category'])){
+			$Model->bindModel($this->_bindModel($Model), false);
+		}
+		
 		$query['contain'][] = 'Category';
-		return parent::beforeFind($Model, $query);
+		return $query;		
+	}
+
+	// public function beforeFind(Model $Model, $query) {
+		// $query['contain'][] = 'Category';
+		// return parent::beforeFind($Model, $query);
+	// }
+
+/**
+ * Bind Model method
+ * 
+ * @param object $Model
+ */
+	protected function _bindModel($Model){
+    	return array('hasAndBelongsToMany' => array(
+        	'Category' =>
+            	array(
+                	'className' => 'Categories.Category',
+                	'joinTable' => 'categorized',
+                	'foreignKey' => 'foreign_key',
+                	'associationForeignKey' => 'category_id',
+                	'conditions' => array(
+                		'Category.model' => $Model->alias,
+            		'order' => array('Category.lft')
+            	)
+        	)
+		));
 	}
 
 
