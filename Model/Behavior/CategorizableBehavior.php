@@ -128,10 +128,10 @@ class CategorizableBehavior extends ModelBehavior {
                 	'associationForeignKey' => 'category_id',
                 	'conditions' => array(
                 		'Category.model' => $Model->alias,
-            		'order' => array('Category.lft')
+                		),
+            		'order' => 'Category.lft'
             	)
-        	)
-		));
+        	));
 	}
 
 
