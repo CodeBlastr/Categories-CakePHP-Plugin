@@ -67,7 +67,7 @@ class CategoriesComponent extends Component {
 		$this->Controller = $controller;
 		$this->modelName = $controller->modelClass;
 		if (!$controller->{$this->modelName}->Behaviors->attached('Categorizable')) {
-			$controller->{$this->modelName}->Behaviors->attach('Categories.Categoizable');
+			$controller->{$this->modelName}->Behaviors->attach('Categories.Categorizable');
 		}
 	}
 	
