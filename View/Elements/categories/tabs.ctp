@@ -15,9 +15,9 @@ foreach ($list as $catId => $catName) {
 			<div class="carousel slide" id="myCarousel">
 				<div class="carousel-cat">
 					<ul class="nav nav-tabs" id="myTabContent">
-						<?php $i = 0; foreach ($catArray as $cat) : $i++; ?>
+						<?php $iCat = 0; foreach ($catArray as $cat) : $iCat++; ?>
 						<li>
-							<a data-toggle="tab" href="#tab<?php echo $i ?>"><?php echo $cat['Category']['name'] ?></a>
+							<a data-toggle="tab" href="#tab<?php echo $iCat ?>"><?php echo $cat['Category']['name'] ?></a>
 						</li>
 						<?php endforeach; ?>
 					</ul>
@@ -57,7 +57,7 @@ foreach ($catArray as $cat) :
 				<div class="carousel slide" id="myCarousel<?php echo $i ?>">
 					<div class="carousel-inner">
 						<?php $iSet = 0; foreach ($sets as $set) : ?>
-						<div class="item <?php if ($iSet === 0) echo 'active' ?>">
+						<div class="item <?php echo ($iSet === 0) ? 'active' : '' ?>">
 							<ul>
 								<?php foreach ($set as $slide) : ?>
 								<li>

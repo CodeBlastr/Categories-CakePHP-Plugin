@@ -29,6 +29,7 @@ $this->set('context_menu', array('menus' => array(
 		'heading' => 'Categories',
 		'items' => array(
 			$this->Html->link('List', array('plugin' => 'categories', 'controller' => 'categories', 'action' => 'index', 'model' => $this->Form->value('Category.model'))),
+			$this->Html->link('Delete', array('plugin' => 'categories', 'controller' => 'categories', 'action' => 'delete', $this->Form->value('Category.id')), array(), __('Are you sure you want to permanently delete %s', $this->Form->value('Category.name')))
 			)
 		),
-	))); ?>
+	)));

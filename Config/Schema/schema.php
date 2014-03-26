@@ -29,7 +29,7 @@ class CategoriesSchema extends CakeSchema {
 		'lft' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10),
 		'rght' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10),
 		'name' => array('type' => 'string', 'null' => false, 'default' => NULL, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'slug' => array('type' => 'string', 'null' => false, 'default' => NULL, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'slug' => array('type' => 'string', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'description' => array('type' => 'text', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'type' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 50, 'collate' => 'utf8_general_ci', 'comment' => 'Category, Attribute Group, Attribute Type, Option Group, Option Type, ', 'charset' => 'utf8'),
 		'user_id' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 36, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),

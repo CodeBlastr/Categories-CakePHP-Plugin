@@ -14,6 +14,7 @@
  *
  * @package categories
  * @subpackage categories.models
+ * @property Category Category
  */
 class Categorized extends CategoriesAppModel {
 
@@ -31,15 +32,15 @@ class Categorized extends CategoriesAppModel {
  */
 	public $useTable = 'categorized';
 
-/** 
+/**
  * Belongs To
- * 
+ *
  * @var array
  */
 	public $belongsTo = array(
 		'Category' => array(
 			'className' => 'Categories.Category',
-			'foreignKey' => 'category_id',			
+			'foreignKey' => 'category_id',
 			));
 /**
  * Validation rules
@@ -58,7 +59,7 @@ class Categorized extends CategoriesAppModel {
 			$this->actsAs['Products.Purchasable'] = array('modelName' => 'Category', 'foreignKey' => 'category_id');
 		}
 		parent::__construct($id, $table, $ds);
-		
+
 		$this->validate = array(
 			'foreign_key' => array(
 				'required' => array('rule' => array('notEmpty'), 'required' => true, 'allowEmpty' => false, 'message' => __d('categories', 'Foreign key can not be empty'))),
@@ -68,8 +69,10 @@ class Categorized extends CategoriesAppModel {
 				'required' => array('rule' => array('notEmpty'), 'required' => true, 'allowEmpty' => false, 'message' => __d('categories', 'Model field can not be empty')))
 			);
 	}
-	
-	
+
+
+
+
 	public function afterSave($created, $options = array()) {
 		if (!empty($this->data['Categorized']['category_id'])) {
 			// update the category record count
@@ -77,12 +80,12 @@ class Categorized extends CategoriesAppModel {
 				$this->Category->recordCount($this->data['Categorized']['category_id']);
 			} catch (Exception $e) {
 				// for now continue, because I don't know what to do.
-				// we don't need to stop, but there should be some thing. 
-				// not sure what? 
+				// we don't need to stop, but there should be some thing.
+				// not sure what?
 			}
 		}
 		return parent::afterSave($created, $options);
-		
+
 	}
 
 }
