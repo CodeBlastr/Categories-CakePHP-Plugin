@@ -17,7 +17,10 @@ class CategoryHelper extends AppHelper {
 		$this->Category = ClassRegistry::init('Categories.Category');
  		return $this->Category->find($type, $params);
  	}
-	
+
+/**
+ * Find threaded
+ */
 	public function findThreaded (){
 		$this->Category = ClassRegistry::init('Categories.Category');
 		$threaded = $this->Category->find('threaded');
@@ -32,7 +35,10 @@ class CategoryHelper extends AppHelper {
 		}
 		return $categories; 
 	}
-	
+
+/**
+ * Load data
+ */
 	public function loadData($options = array()) {
 		$this->Category = ClassRegistry::init('Categories.Category');
 		// $joins = array(
