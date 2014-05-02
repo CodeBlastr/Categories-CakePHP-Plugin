@@ -16,6 +16,7 @@
  * @subpackage categories.models
  * @property Category Category
  */
+App::uses('CategoriesAppModel', 'Categories.Model');
 class Categorized extends CategoriesAppModel {
 
 /**
