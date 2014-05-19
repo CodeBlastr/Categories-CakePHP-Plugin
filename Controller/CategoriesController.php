@@ -35,13 +35,6 @@ class AppCategoriesController extends CategoriesAppController {
 	public $name = 'Categories';
 
 /**
- * Helpers
- *
- * @var array
- */
-	public $helpers = array('Html', 'Form');
-
-/**
  * beforeFilter callback
  *
  * @return void
