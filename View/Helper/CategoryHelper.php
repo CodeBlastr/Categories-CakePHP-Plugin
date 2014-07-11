@@ -2,6 +2,8 @@
 
 class CategoryHelper extends AppHelper {
 	
+	public $helpers = array('Html');
+	
 	public function __construct(View $View, $settings = array()) {
 		parent::__construct($View, $settings);
 		
@@ -141,6 +143,32 @@ class CategoryHelper extends AppHelper {
 				throw new Exception ($e->getMessage());
 			}
 		}
+	}
+	
+	public function getCatCrumb($catid, $sep = false, $links = true) {
+		App::uses('Category', 'Categories.Model');
+		$Category = new Category();
+		$parents = $Category->getPath($catid);
+		$html = "";
+		if($links) {
+			foreach ($parents as $i => $parent) {
+				if($i < count($parents)-1) {
+					$url = array(
+							'plugin' => $this->request->params['plugin'],
+							'controller' => $this->request->params['controller'],
+							'action' => $this->request->params['action'],
+							$parent['Category']['id']
+					);
+					$html .= $this->Html->link($parent['Category']['name'], $url);
+					$html .= " ".$sep." ";
+				}else {
+					$html .= $parent['Category']['name'];
+				}
+			}
+		}else {
+			$html = implode(" ".$sep." ", Hash::extract($parents, '{n}.Category.name'));
+		}
+		return $html;
 	}
 	
 }
