@@ -279,11 +279,13 @@ class Category extends CategoriesAppModel {
                 // foreach($data['Category']['id'][0] as $catId) {
                 if (is_array($data['Category']['id'])) {
 	                foreach($data['Category']['id'] as $catId) {
-	                    $modelData[] = array(
-	                        'model' => $model,
-	                        'foreign_key' => $id,
-	                        'category_id' => $catId,
-	                        );
+	                    if (!empty($catId)) {
+	                    	$modelData[] = array(
+		                        'model' => $model,
+		                        'foreign_key' => $id,
+		                        'category_id' => $catId,
+		                        );
+						}
 	                }
                 } else {
                     $modelData[] = array(
