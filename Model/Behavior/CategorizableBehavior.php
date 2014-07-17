@@ -176,7 +176,7 @@ class CategorizableBehavior extends ModelBehavior {
 				$categorized['Category']['id'][] = $this->data['Category']['Category'];
 			}
 			try {
-				$Category = new Category;
+				$Category = new Category();
         		$Category->categorized($categorized, $Model->alias);
 			} catch (Exception $e) {
 				throw new Exception ($e->getMessage());
