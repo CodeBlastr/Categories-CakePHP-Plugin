@@ -191,7 +191,7 @@ class CategorizableBehavior extends ModelBehavior {
 	 */
 	
 	public function getCategories (Model $Model) {
-		App::uses('Category', 'Categories.Category');
+		App::uses('Category', 'Categories.Model');
 		$Category = new Category();
 		$params = array('Category.model' => $Model->alias);
 		$categories = $Category->generateTreeList($params);
