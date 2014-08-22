@@ -297,20 +297,29 @@ class Category extends CategoriesAppModel {
             }
 		}
 		if (!empty($modelData)) {
-			$this->Categorized->saveAll($modelData);  
+			App::uses('Categorized', 'Categories.Model');
+			$Categorized = new Categorized();
+			$Categorized->saveAll($modelData);  
 			$ret = true;
 		}
 		return $ret;
 	}
 
+/**
+ * Record Count method
+ * 
+ * Updates counter cache for categories
+ * Seems to only be fired from the Categorized model (FYI)
+ */
 	public function recordCount($categoryId) {
 		$count = $this->Categorized->find('count', array('conditions' => array('Categorized.category_id' => $categoryId)));
-		$data['Category']['id'] = $categoryId;
-		$data['Category']['record_count'] = $count;
-		if ($this->save($data)) {
+		//$data['Category']['id'] = $categoryId;
+		//$data['Category']['record_count'] = $count;
+		$this->id = $categoryId;
+		if ($this->saveField('record_count', $count)) {
 			return true;
 		} else {
-			throw new Exception(__d('categories', 'Categor record count update failed.'));
+			throw new Exception(__d('categories', 'Category record count update failed.'));
 		}
 	}
 	
