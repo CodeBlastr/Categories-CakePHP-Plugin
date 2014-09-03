@@ -268,6 +268,16 @@ class AppCategoriesController extends CategoriesAppController {
 		$this->set('page_title_for_layout', 'Categories Dashboard');
 		$this->set('title_for_layout', 'Categories Dashboard');
 	}
+	
+	public function updateCounts() {
+		$this->redirect('admin');
+		$cats = $this->Category->find('all');
+		foreach ($cats as $cat) {
+			$this->Category->recordCount($cat['Category']['id']);
+		}
+		$this->Session->setFlash('Categorized item counts have been updated.', 'flash_success');
+		$this->redirect($this->referer());
+	}
 
 
 /**

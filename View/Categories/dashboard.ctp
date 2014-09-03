@@ -68,6 +68,9 @@
 
 </div>
 
+<p><a href="/admin/categories/categories/updateCounts" class="btn btn-default">Force update of Categorized item counts</a></p>
+
+
 <div class="categories dashboard">
 	<?php $this->Html->script(array('/categories/js/jquery.treeview', '/categories/js/views/categories/tree'), array('inline' => false)); ?>
 	<?php $this->Html->css(array('/categories/css/jquery.treeview'), null, array('inline' => false)); ?>
