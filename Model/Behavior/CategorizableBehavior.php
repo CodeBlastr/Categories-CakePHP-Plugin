@@ -178,6 +178,13 @@ class CategorizableBehavior extends ModelBehavior {
 			try {
 				$Category = new Category();
         		$Category->categorized($categorized, $Model->alias);
+				if (is_array($categorized['Category']['id'])) {
+					foreach ($categorized['Category']['id'] as $catId) {
+						$Category->recordCount($catId);
+					}
+				} else {
+					$Category->recordCount($categorized['Category']['id']);
+				}
 			} catch (Exception $e) {
 				throw new Exception ($e->getMessage());
 			}
