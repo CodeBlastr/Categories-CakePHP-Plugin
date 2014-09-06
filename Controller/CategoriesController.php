@@ -188,7 +188,7 @@ class AppCategoriesController extends CategoriesAppController {
  	public function add() {
 		if($this->request->is('post')) {
 			try {
-				$result = $this->Category->save($this->request->data);
+				$result = $this->Category->saveAll($this->request->data);
 				$this->Session->setFlash(__d('categories', 'Category Saved', true), 'flash_success');
 				$this->redirect($this->referer());
 			} catch (Exception $e) {

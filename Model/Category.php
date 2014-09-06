@@ -141,6 +141,14 @@ class Category extends CategoriesAppModel {
         $this->Behaviors->attach('Galleries.Mediable');
         return parent::beforeSave($options);
     }
+
+/**
+ * Overwritten for saving multiple separated by commas
+ */
+	public function saveAll($data = null, $options = array()) {
+		$data = $this->multiple($data);
+		return parent::saveAll($data, $options);
+	}
 	
 	
 /**
@@ -360,6 +368,23 @@ class Category extends CategoriesAppModel {
  	public function cleanData($data) {
 		if (empty($data[$this->alias]['parent_id'])) {
 			$data[$this->alias]['parent_id'] = null;
+		}
+ 		return $data;
+ 	}
+
+/**
+ * Multiple names
+ */
+ 	public function multiple($data) {
+		// virtual field for adding multiple categories at once (order is important here, should be at the end of this function)
+		if (!empty($data[$this->alias]['multiple'])) {
+			$categories = $data;
+			unset($data);
+			$names = explode(',', $categories[$this->alias]['multiple']);
+			for ($i=0; $i < count($names); $i++) {
+				$data[$i] = $categories;
+				$data[$i][$this->alias]['name'] = trim($names[$i]); 
+			}
 		}
  		return $data;
  	}
