@@ -48,6 +48,7 @@ class CategorizableBehavior extends ModelBehavior {
     protected $defaults = array(
 		'modelAlias' => null, // changed to $Model->alias in setup()
 		);
+    
 
 
 /**
@@ -62,7 +63,6 @@ class CategorizableBehavior extends ModelBehavior {
     	// we have to give a model name, because multiple models use
     	$this->settings[$Model->name] = array_merge($this->defaults, $config);
 		$this->settings[$Model->name]['modelAlias'] = !empty($config['modelAlias']) ? $config['modelAlias'] : $Model->alias;
-		
 		//Add the HasMany Relationship to the $Model
 		$Model->bindModel(
 	        array('hasAndBelongsToMany' => array(
@@ -176,12 +176,33 @@ class CategorizableBehavior extends ModelBehavior {
 				$categorized['Category']['id'][] = $this->data['Category']['Category'];
 			}
 			try {
-				$Category = new Category;
+				$Category = new Category();
         		$Category->categorized($categorized, $Model->alias);
+				if (is_array($categorized['Category']['id'])) {
+					foreach ($categorized['Category']['id'] as $catId) {
+						$Category->recordCount($catId);
+					}
+				} else {
+					$Category->recordCount($categorized['Category']['id']);
+				}
 			} catch (Exception $e) {
 				throw new Exception ($e->getMessage());
 			}
 		}
 	}
+	
+	
+	/**
+	 * Simple Function for retrieving Categores on a model
+	 * @param string $model_name
+	 */
+	
+	public function getCategories (Model $Model) {
+		App::uses('Category', 'Categories.Model');
+		$Category = new Category();
+		$params = array('Category.model' => $Model->alias);
+		$categories = $Category->generateTreeList($params);
+		return $categories;
+	} 
 	
 }

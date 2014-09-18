@@ -70,10 +70,7 @@ class Categorized extends CategoriesAppModel {
 				'required' => array('rule' => array('notEmpty'), 'required' => true, 'allowEmpty' => false, 'message' => __d('categories', 'Model field can not be empty')))
 			);
 	}
-
-
-
-
+	
 	public function afterSave($created, $options = array()) {
 		if (!empty($this->data['Categorized']['category_id'])) {
 			// update the category record count

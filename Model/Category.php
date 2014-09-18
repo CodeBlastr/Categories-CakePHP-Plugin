@@ -140,6 +140,14 @@ class AppCategory extends CategoriesAppModel{
         $this->Behaviors->attach('Galleries.Mediable');
         return parent::beforeSave($options);
     }
+
+/**
+ * Overwritten for saving multiple separated by commas
+ */
+	public function saveAll($data = null, $options = array()) {
+		$data = $this->multiple($data);
+		return parent::saveAll($data, $options);
+	}
 	
 	
 /**
@@ -278,11 +286,13 @@ class AppCategory extends CategoriesAppModel{
                 // foreach($data['Category']['id'][0] as $catId) {
                 if (is_array($data['Category']['id'])) {
 	                foreach($data['Category']['id'] as $catId) {
-	                    $modelData[] = array(
-	                        'model' => $model,
-	                        'foreign_key' => $id,
-	                        'category_id' => $catId,
-	                        );
+	                    if (!empty($catId)) {
+	                    	$modelData[] = array(
+		                        'model' => $model,
+		                        'foreign_key' => $id,
+		                        'category_id' => $catId,
+		                        );
+						}
 	                }
                 } else {
                     $modelData[] = array(
@@ -294,20 +304,29 @@ class AppCategory extends CategoriesAppModel{
             }
 		}
 		if (!empty($modelData)) {
-			$this->Categorized->saveAll($modelData);  
+			App::uses('Categorized', 'Categories.Model');
+			$Categorized = new Categorized();
+			$Categorized->saveAll($modelData);  
 			$ret = true;
 		}
 		return $ret;
 	}
 
+/**
+ * Record Count method
+ * 
+ * Updates counter cache for categories
+ * Seems to only be fired from the Categorized model (FYI)
+ */
 	public function recordCount($categoryId) {
 		$count = $this->Categorized->find('count', array('conditions' => array('Categorized.category_id' => $categoryId)));
-		$data['Category']['id'] = $categoryId;
-		$data['Category']['record_count'] = $count;
-		if ($this->save($data)) {
+		//$data['Category']['id'] = $categoryId;
+		//$data['Category']['record_count'] = $count;
+		$this->id = $categoryId;
+		if ($this->saveField('record_count', $count)) {
 			return true;
 		} else {
-			throw new Exception(__d('categories', 'Categor record count update failed.'));
+			throw new Exception(__d('categories', 'Category record count update failed.'));
 		}
 	}
 	
@@ -348,6 +367,23 @@ class AppCategory extends CategoriesAppModel{
  	public function cleanData($data) {
 		if (empty($data[$this->alias]['parent_id'])) {
 			$data[$this->alias]['parent_id'] = null;
+		}
+ 		return $data;
+ 	}
+
+/**
+ * Multiple names
+ */
+ 	public function multiple($data) {
+		// virtual field for adding multiple categories at once (order is important here, should be at the end of this function)
+		if (!empty($data[$this->alias]['multiple'])) {
+			$categories = $data;
+			unset($data);
+			$names = explode(',', $categories[$this->alias]['multiple']);
+			for ($i=0; $i < count($names); $i++) {
+				$data[$i] = $categories;
+				$data[$i][$this->alias]['name'] = trim($names[$i]); 
+			}
 		}
  		return $data;
  	}
