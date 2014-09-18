@@ -17,8 +17,7 @@ App::uses('CategoriesAppModel', 'Categories.Model');
  * @subpackage categories.models
  * @property TreeBehavior Tree
  */
-class Category extends CategoriesAppModel {
-
+class AppCategory extends CategoriesAppModel{
 /**
  * Name
  *
@@ -353,4 +352,8 @@ class Category extends CategoriesAppModel {
  		return $data;
  	}
     
+}
+if (!isset($refuseInit)) {
+    class Category extends AppCategory {
+    }
 }
