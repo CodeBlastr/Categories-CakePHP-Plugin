@@ -188,7 +188,7 @@ class AppCategoriesController extends CategoriesAppController {
  	public function add() {
 		if($this->request->is('post')) {
 			try {
-				$result = $this->Category->save($this->request->data);
+				$result = $this->Category->saveAll($this->request->data);
 				$this->Session->setFlash(__d('categories', 'Category Saved', true), 'flash_success');
 				$this->redirect($this->referer());
 			} catch (Exception $e) {
@@ -267,6 +267,16 @@ class AppCategoriesController extends CategoriesAppController {
 		$this->set('models', $models = array_diff($this->Category->listModels(), $models));
 		$this->set('page_title_for_layout', 'Categories Dashboard');
 		$this->set('title_for_layout', 'Categories Dashboard');
+	}
+	
+	public function updateCounts() {
+		$this->redirect('admin');
+		$cats = $this->Category->find('all');
+		foreach ($cats as $cat) {
+			$this->Category->recordCount($cat['Category']['id']);
+		}
+		$this->Session->setFlash('Categorized item counts have been updated.', 'flash_success');
+		$this->redirect($this->referer());
 	}
 
 

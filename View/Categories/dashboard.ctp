@@ -16,11 +16,12 @@
 							<?php echo $this->Form->create('Category', array('type' => 'file', 'url' => array('action' => 'add')));?>
 							<?php echo $this->Form->hidden('Category.model', array('value' => $model)); ?>
 							<fieldset>
-							    <?php echo $this->Form->input('Category.name', array('label' => false, 'placeholder' => __('New %s Category Name', $model))); ?>
 								<?php echo $this->Form->input('Category.parent_id', array('label' => false, 'empty' => '-- Optional Parent --', 'options' => $options[$model])); ?>
+							    <?php echo $this->Form->input('Category.name', array('label' => false, 'placeholder' => __('New %s Category Name', $model))); ?>
 							</fieldset>
 						    <fieldset>
 						    	<legend class="toggleClick">extras</legend>
+							    <?php echo $this->Form->input('Category.multiple', array('div' => array('class' => 'collapse'), 'label' => false, 'type' => 'textarea', 'placeholder' => 'Add multiple categories at once (to the chosen parent) by separating names with  comma.')); ?>
 								<?php echo $this->Form->input('GalleryImage.filename', array('type' => 'file', 'label' => 'Category thumbnail')); ?>
 								<?php echo $this->Form->input('Category.description', array('type' => 'textarea')); ?>
 							</fieldset>
@@ -67,6 +68,9 @@
 	</div>
 
 </div>
+
+<p><a href="/admin/categories/categories/updateCounts" class="btn btn-default">Force update of Categorized item counts</a></p>
+
 
 <div class="categories dashboard">
 	<?php $this->Html->script(array('/categories/js/jquery.treeview', '/categories/js/views/categories/tree'), array('inline' => false)); ?>

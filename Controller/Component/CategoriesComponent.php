@@ -70,9 +70,6 @@ class CategoriesComponent extends Component {
 			$controller->{$this->modelName}->Behaviors->attach('Categories.Categorizable');
 		}
 	}
-	
-	function shutdown() { }
-	function beforeRedirect() { }
 
 /**
  * Callback
@@ -117,7 +114,7 @@ class CategoriesComponent extends Component {
  * @return void
  * @access public
  */
-	public function beforeRender($viewFile) {
+	public function beforeRender(Controller $controller) {
 		//Set a global variable for all the categories attached to the model
 		if(in_array($this->Controller->action, $this->addAction)) {
 			if(isset($this->Controller->request->query['category'])) {
