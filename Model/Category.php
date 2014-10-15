@@ -388,6 +388,30 @@ class AppCategory extends CategoriesAppModel{
  		return $data;
  	}
     
+/**
+ * Mimics some of the functionality of generateTreeList(), but returns them alphabetically
+ * @param array $conditions
+ * @param string $separator
+ * @return array
+ */
+	public function generateTreeListAplha($conditions, $separator = '- ') {
+		$categories = $this->find('threaded', array(
+			'order' => 'Category.name ASC',
+			'contain' => false,
+			'conditions' => $conditions
+		));
+		$treeArray = array();
+		foreach($categories as $parent) {
+			$treeArray[$parent['Category']['id']] = $parent['Category']['name'];
+			if (!empty($parent['children'])) {
+				foreach ($parent['children'] as $childCategory) {
+					$treeArray[$childCategory['Category']['id']] = $separator . $childCategory['Category']['name'];
+				}
+			}
+		}
+		return $treeArray;
+	}
+	
 }
 if (!isset($refuseInit)) {
     class Category extends AppCategory {
