@@ -64,7 +64,10 @@ class CategoryHelper extends AppHelper {
 	}
 	
 	
-	
+/**
+ * Returns list of top-level categories
+ * @return array
+ */
 	public function displayList() {
 		$Category = ClassRegistry::init('Categories.Category');
 		return $Category->find('list', array('conditions' => array('Category.parent_id' => '')));
