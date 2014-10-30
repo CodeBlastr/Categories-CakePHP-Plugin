@@ -42,7 +42,6 @@ class AppCategoriesController extends CategoriesAppController {
 	public function beforeFilter() {
 		parent::beforeFilter();
 		$this->Auth->allow('view', 'index');
-		//debug($this->modelClass);
 		$this->set('modelName', $this->modelClass);
 	}
 	
