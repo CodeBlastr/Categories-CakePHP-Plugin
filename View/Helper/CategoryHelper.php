@@ -71,6 +71,7 @@ class CategoryHelper extends AppHelper {
 	}
 
 /**
+ * Returns list of top-level categories
  * @return array
  */
 	public function displayList() {
