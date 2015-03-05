@@ -70,7 +70,7 @@ class CategorizableBehavior extends ModelBehavior {
 	            	array(
 	                	'className' => 'Categories.Category',
 	                	'joinTable' => 'categorized',
-	                	//'with' => 'Categories.Categorized',
+	                	'with' => 'Categories.Categorized', // this was commented out, but broke queries due to not joining AS Categorized 1.22.2015 ^JB
 	                	'foreignKey' => 'foreign_key',
 	                	'associationForeignKey' => 'category_id',
 	                	'conditions' => array(
