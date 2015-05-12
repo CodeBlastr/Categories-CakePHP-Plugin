@@ -38,10 +38,10 @@ foreach ($categories as $category):
 			<?php echo $this->Text->truncate(strip_tags($category['Category']['description']), 100, array('ending' => '...')); ?>
 		</td>
 		<td class="actions">
-			<?php echo $this->Html->link(__d('categories', 'View'), array('action' => 'view', $category['Category']['id'])); ?>
-			<?php echo $this->Html->link(__d('categories', 'Edit'), array('action' => 'edit', $category['Category']['id'])); ?>
-    		<?php echo $this->Html->link(__d('categories', 'Move Up'), array('action' => 'moveup', $category['Category']['name'], 1)); ?>
-			<?php echo $this->Html->link(__d('categories', 'Delete'), array('action' => 'delete', $category['Category']['id']), null, sprintf(__d('categories', 'Are you sure you want to delete # %s?'), $category['Category']['id'])); ?>
+			<?php echo $this->Html->link(__d('categories', 'View'), array('action' => 'view', $category['Category']['id']), array('class' => 'btn btn-default')); ?>
+			<?php echo $this->Html->link(__d('categories', 'Edit'), array('action' => 'edit', $category['Category']['id']), array('class' => 'btn btn-warning')); ?>
+    		<?php echo $this->Html->link(__d('categories', 'Move Up'), array('action' => 'moveup', $category['Category']['name'], 1), array('class' => 'btn btn-info')); ?>
+			<?php echo $this->Html->link(__d('categories', 'Delete'), array('action' => 'delete', $category['Category']['id']), array('class' => 'btn btn-danger'), sprintf(__d('categories', 'Are you sure you want to delete # %s?'), $category['Category']['id'])); ?>
 		</td>
 	</tr>
 <?php endforeach; ?>
